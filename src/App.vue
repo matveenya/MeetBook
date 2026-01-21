@@ -1,30 +1,27 @@
-<script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
-</script>
-
 <template>
   <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
+    <button @click="login">Login with Google</button>
   </div>
-  <HelloWorld msg="Vite + Vue" />
 </template>
 
+<script lang="ts" setup>
+import { useAuth } from "vue-auth3"
+
+const auth = useAuth()
+
+const login = () => {
+auth.oauth2('google', {
+  code: '',
+  state: '',
+  params: {
+    redirect_uri: 'http://localhost:5173/login/google',
+    client_id: import.meta.env.VITE_CLIENT_ID,
+  },
+  url: 'https://accounts.google.com/o/oauth2/auth',
+  window: window
+})
+}
+</script>
+
 <style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
 </style>
