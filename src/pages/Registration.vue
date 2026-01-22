@@ -35,7 +35,7 @@
               placeholder="Password"
               toggleMask
               fluid
-              :feedback="true"
+              :feedback="false"
               inputClass="w-full! py-3! border! border-gray-300! rounded-xl! focus:outline-none! focus:ring-2! focus:ring-[#3f4bb0]! focus:border-transparent! transition!"
             />
           </IconField>
@@ -48,7 +48,7 @@
               placeholder="Confirm password"
               toggleMask
               fluid
-              :feedback="true"
+              :feedback="false"
               inputClass="w-full! py-3! border! border-gray-300! rounded-xl! focus:outline-none! focus:ring-2! focus:ring-[#3f4bb0]! focus:border-transparent! transition!"
             />
           </IconField>

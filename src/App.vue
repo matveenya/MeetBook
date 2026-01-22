@@ -8,10 +8,6 @@
           <button @click="auth.logout()" class="text-red-500 text-sm font-bold">Logout</button>
         </div>
       </nav>
-      <main class="p-8 text-center">
-        <h1 class="text-2xl font-bold">Welcome to MeetBook!</h1>
-        <p class="mt-4 text-gray-600">Your meeting booking system is ready.</p>
-      </main>
     </div>
 
     <RouterView></RouterView>
