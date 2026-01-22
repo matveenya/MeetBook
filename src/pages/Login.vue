@@ -65,6 +65,7 @@
 
       <p class="text-gray-500 text-sm mb-4 text-center">Have no account yet?</p>
       <Button
+        @click="goToRegistration"
         label="Registration"
         variant="outlined"
         fluid
@@ -75,6 +76,7 @@
 </template>
 
 <script lang="ts" setup>
+import { useRouter } from 'vue-router';
 import { useAuth } from 'vue-auth3';
 import InputText from 'primevue/inputtext';
 import Password from 'primevue/password';
@@ -82,7 +84,12 @@ import Button from 'primevue/button';
 import IconField from 'primevue/iconfield';
 import InputIcon from 'primevue/inputicon';
 
+const router = useRouter();
 const auth = useAuth();
+
+const goToRegistration = () => {
+  router.push('/registration');
+};
 
 const loginWithGoogle = () => {
   auth.oauth2('google', {

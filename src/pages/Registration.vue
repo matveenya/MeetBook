@@ -70,6 +70,7 @@
 
       <p class="text-gray-500 text-sm mb-4 text-center">Already have an account?</p>
       <Button
+        @click="goToLogIn"
         label="Log in"
         variant="outlined"
         fluid
@@ -80,11 +81,18 @@
 </template>
 
 <script lang="ts" setup>
+import { useRouter } from 'vue-router';
 import InputText from 'primevue/inputtext';
 import Password from 'primevue/password';
 import Button from 'primevue/button';
 import IconField from 'primevue/iconfield';
 import InputIcon from 'primevue/inputicon';
+
+const router = useRouter();
+
+const goToLogIn = () => {
+  router.push('/login');
+};
 </script>
 
 <style scoped></style>

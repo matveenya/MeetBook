@@ -14,14 +14,12 @@
       </main>
     </div>
 
-    <Registration v-else />
+    <RouterView></RouterView>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { useAuth } from 'vue-auth3';
-import Registration from './pages/Registration.vue';
-
 const auth = useAuth();
 </script>
 
