@@ -13,17 +13,16 @@
         <p class="mt-4 text-gray-600">Your meeting booking system is ready.</p>
       </main>
     </div>
-    
+
     <Login v-else />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { useAuth } from "vue-auth3"
-import Login from './pages/Login.vue'
+import { useAuth } from 'vue-auth3';
+import Login from './pages/Login.vue';
 
-const auth = useAuth()
+const auth = useAuth();
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>
