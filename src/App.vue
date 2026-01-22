@@ -14,13 +14,13 @@
       </main>
     </div>
 
-    <Login v-else />
+    <Registration v-else />
   </div>
 </template>
 
 <script lang="ts" setup>
 import { useAuth } from 'vue-auth3';
-import Login from './pages/Login.vue';
+import Registration from './pages/Registration.vue';
 
 const auth = useAuth();
 </script>
