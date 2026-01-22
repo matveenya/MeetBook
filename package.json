@@ -19,11 +19,16 @@
   },
   "dependencies": {
     "@fullcalendar/vue3": "^6.1.20",
+    "@primeuix/themes": "^2.0.3",
+    "@primevue/themes": "^4.5.4",
     "@tailwindcss/vite": "^4.1.18",
     "@websanova/vue-auth": "^4.2.1",
     "axios": "^1.13.2",
     "pinia": "^3.0.4",
+    "primeicons": "^7.0.0",
+    "primevue": "^4.5.4",
     "tailwindcss": "^4.1.18",
+    "tailwindcss-primeui": "^0.6.1",
     "vue": "^3.5.24",
     "vue-auth3": "^1.1.2",
     "vue-router": "^4.6.4"
