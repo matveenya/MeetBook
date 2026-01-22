@@ -5,22 +5,28 @@
 
       <form class="w-full space-y-4" @submit.prevent>
         <div class="flex flex-col gap-1">
-          <InputText
-            type="email"
-            placeholder="Email"
-            fluid
-            class="w-full! pl-12! pr-4! py-3! border! border-gray-300! rounded-xl! focus:outline-none! focus:ring-2! focus:ring-[#3f4bb0]! focus:border-transparent! transition!"
-          />
+          <IconField>
+            <InputIcon class="pi pi-envelope" />
+            <InputText
+              type="email"
+              placeholder="Email"
+              fluid
+              class="w-full! pl-12! pr-4! py-3! border! border-gray-300! rounded-xl! focus:outline-none! focus:ring-2! focus:ring-[#3f4bb0]! focus:border-transparent! transition!"
+            />
+          </IconField>
         </div>
 
         <div class="flex flex-col gap-1">
-          <Password
-            placeholder="Password"
-            :feedback="false"
-            toggleMask
-            fluid
-            inputClass="w-full! pl-12! pr-4! py-3! border! border-gray-300! rounded-xl! focus:outline-none! focus:ring-2! focus:ring-[#3f4bb0]! focus:border-transparent! transition!"
-          />
+          <IconField>
+            <InputIcon class="pi pi-lock" />
+            <Password
+              placeholder="Password"
+              :feedback="false"
+              toggleMask
+              fluid
+              inputClass="w-full! pl-12! pr-4! py-3! border! border-gray-300! rounded-xl! focus:outline-none! focus:ring-2! focus:ring-[#3f4bb0]! focus:border-transparent! transition!"
+            />
+          </IconField>
         </div>
 
         <div class="text-right">
@@ -73,6 +79,8 @@ import { useAuth } from 'vue-auth3';
 import InputText from 'primevue/inputtext';
 import Password from 'primevue/password';
 import Button from 'primevue/button';
+import IconField from 'primevue/iconfield';
+import InputIcon from 'primevue/inputicon';
 
 const auth = useAuth();
 
