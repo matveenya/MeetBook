@@ -4,38 +4,23 @@
       <h1 class="text-[#333] text-3xl font-medium mb-12">Welcome</h1>
 
       <form class="w-full space-y-4" @submit.prevent="onSubmit">
-        <div class="flex flex-col gap-1">
-          <IconField>
-            <InputIcon class="pi pi-envelope" />
-            <InputText
-              v-model="email"
-              v-bind="emailProps"
-              type="email"
-              placeholder="Email"
-              fluid
-              :invalid="!!errors.email"
-              class="w-full! pl-12! pr-4! py-3! border! border-gray-300! rounded-xl! focus:outline-none! focus:ring-2! focus:ring-[#3f4bb0]! focus:border-transparent! transition!"
-            />
-          </IconField>
-          <small class="text-red-500 ml-2">{{ errors.email }}</small>
-        </div>
+        <Input
+          v-model="email"
+          v-bind="emailProps"
+          type="email"
+          placeholder="Email"
+          icon="pi pi-envelope"
+          :error="errors.email"
+        />
 
-        <div class="flex flex-col gap-1">
-          <IconField>
-            <InputIcon class="pi pi-lock" />
-            <Password
-              v-model="password"
-              v-bind="passwordProps"
-              placeholder="Password"
-              :feedback="false"
-              toggleMask
-              fluid
-              :invalid="!!errors.password"
-              inputClass="w-full! pl-12! pr-4! py-3! border! border-gray-300! rounded-xl! focus:outline-none! focus:ring-2! focus:ring-[#3f4bb0]! focus:border-transparent! transition!"
-            />
-          </IconField>
-          <small class="text-red-500 ml-2">{{ errors.password }}</small>
-        </div>
+        <Input
+          v-model="password"
+          v-bind="passwordProps"
+          type="password"
+          placeholder="Password"
+          icon="pi pi-lock"
+          :error="errors.password"
+        />
 
         <div class="text-right">
           <a href="#" class="text-[#7e8ae5] text-sm hover:underline">Forgot password?</a>
@@ -91,11 +76,8 @@ import { useAuth } from 'vue-auth3';
 import { useForm } from 'vee-validate';
 import { authSchema, type AuthSchema } from '../utils/schemas/authValidationSchema';
 import { toTypedSchema } from '@vee-validate/zod';
-import InputText from 'primevue/inputtext';
-import Password from 'primevue/password';
+import Input from '../components/ui/Input.vue';
 import Button from 'primevue/button';
-import IconField from 'primevue/iconfield';
-import InputIcon from 'primevue/inputicon';
 
 const router = useRouter();
 const auth = useAuth();

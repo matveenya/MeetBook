@@ -4,71 +4,41 @@
       <h1 class="text-[#333] text-3xl font-medium mb-8">Registration</h1>
 
       <form class="w-full space-y-4" @submit.prevent="onSubmit">
-        <div class="flex flex-col gap-1">
-          <IconField>
-            <InputIcon class="pi pi-user" />
-            <InputText
-              v-model="fullName"
-              v-bind="fullNameProps"
-              type="text"
-              placeholder="Full Name"
-              fluid
-              :invalid="!!errors.fullName"
-              class="w-full! py-3! border! border-gray-300! rounded-xl! focus:outline-none! focus:ring-2! focus:ring-[#3f4bb0]! focus:border-transparent! transition!"
-            />
-          </IconField>
-          <small class="text-red-500 ml-2">{{ errors.fullName }}</small>
-        </div>
+        <Input
+          v-model="fullName"
+          v-bind="fullNameProps"
+          type="text"
+          placeholder="Full Name"
+          icon="pi pi-user"
+          :error="errors.fullName"
+        />
 
-        <div class="flex flex-col gap-1">
-          <IconField>
-            <InputIcon class="pi pi-envelope" />
-            <InputText
-              v-model="email"
-              v-bind="emailProps"
-              type="email"
-              placeholder="Email"
-              fluid
-              :invalid="!!errors.email"
-              class="w-full! py-3! border! border-gray-300! rounded-xl! focus:outline-none! focus:ring-2! focus:ring-[#3f4bb0]! focus:border-transparent! transition!"
-            />
-          </IconField>
-          <small class="text-red-500 ml-2">{{ errors.email }}</small>
-        </div>
+        <Input
+          v-model="email"
+          v-bind="emailProps"
+          type="email"
+          placeholder="Email"
+          icon="pi pi-envelope"
+          :error="errors.email"
+        />
 
-        <div class="flex flex-col gap-1">
-          <IconField>
-            <InputIcon class="pi pi-lock" />
-            <Password
-              v-model="password"
-              v-bind="passwordProps"
-              placeholder="Password"
-              toggleMask
-              fluid
-              :feedback="false"
-              :invalid="!!errors.password"
-              inputClass="w-full! py-3! border! border-gray-300! rounded-xl! focus:outline-none! focus:ring-2! focus:ring-[#3f4bb0]! focus:border-transparent! transition!"
-            />
-          </IconField>
-          <small class="text-red-500 ml-2">{{ errors.password }}</small>
-        </div>
+        <Input
+          v-model="password"
+          v-bind="passwordProps"
+          type="password"
+          placeholder="Password"
+          icon="pi pi-lock"
+          :error="errors.password"
+        />
 
-        <div class="flex flex-col gap-1">
-          <IconField>
-            <InputIcon class="pi pi-lock" />
-            <Password
-              v-model="confirmPassword"
-              v-bind="confrimPasswordProps"
-              placeholder="Confirm password"
-              toggleMask
-              fluid
-              :feedback="false"
-              :invalid="!!errors.confirmPassword"
-              inputClass="w-full! py-3! border! border-gray-300! rounded-xl! focus:outline-none! focus:ring-2! focus:ring-[#3f4bb0]! focus:border-transparent! transition!"
-            />
-          </IconField>
-          <small class="text-red-500 ml-2">{{ errors.confirmPassword }}</small>
-        </div>
+        <Input
+          v-model="confirmPassword"
+          v-bind="confrimPasswordProps"
+          type="password"
+          placeholder="Confirm password"
+          icon="pi pi-lock"
+          :error="errors.confirmPassword"
+        />
 
         <Button
           type="submit"
@@ -102,11 +72,8 @@ import { useRouter } from 'vue-router';
 import { useForm } from 'vee-validate';
 import { authSchema, type AuthSchema } from '../utils/schemas/authValidationSchema';
 import { toTypedSchema } from '@vee-validate/zod';
-import InputText from 'primevue/inputtext';
-import Password from 'primevue/password';
+import Input from '../components/ui/Input.vue';
 import Button from 'primevue/button';
-import IconField from 'primevue/iconfield';
-import InputIcon from 'primevue/inputicon';
 
 const router = useRouter();
 
