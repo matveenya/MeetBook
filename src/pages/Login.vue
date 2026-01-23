@@ -3,30 +3,38 @@
     <div class="bg-white w-full max-w-md rounded-[40px] shadow-xl p-10 flex flex-col items-center">
       <h1 class="text-[#333] text-3xl font-medium mb-12">Welcome</h1>
 
-      <form class="w-full space-y-4" @submit.prevent>
+      <form class="w-full space-y-4" @submit.prevent="onSubmit">
         <div class="flex flex-col gap-1">
           <IconField>
             <InputIcon class="pi pi-envelope" />
             <InputText
+              v-model="email"
+              v-bind="emailProps"
               type="email"
               placeholder="Email"
               fluid
+              :invalid="!!errors.email"
               class="w-full! pl-12! pr-4! py-3! border! border-gray-300! rounded-xl! focus:outline-none! focus:ring-2! focus:ring-[#3f4bb0]! focus:border-transparent! transition!"
             />
           </IconField>
+          <small class="text-red-500 ml-2">{{ errors.email }}</small>
         </div>
 
         <div class="flex flex-col gap-1">
           <IconField>
             <InputIcon class="pi pi-lock" />
             <Password
+              v-model="password"
+              v-bind="passwordProps"
               placeholder="Password"
               :feedback="false"
               toggleMask
               fluid
+              :invalid="!!errors.password"
               inputClass="w-full! pl-12! pr-4! py-3! border! border-gray-300! rounded-xl! focus:outline-none! focus:ring-2! focus:ring-[#3f4bb0]! focus:border-transparent! transition!"
             />
           </IconField>
+          <small class="text-red-500 ml-2">{{ errors.password }}</small>
         </div>
 
         <div class="text-right">
@@ -34,8 +42,10 @@
         </div>
 
         <Button
+          type="submit"
           label="Log in"
           fluid
+          :loading="isSubmitting"
           class="w-full! bg-[#3f4bb0]! text-white! py-3! rounded-full! font-medium! hover:bg-[#343e94]! transition! mt-6! shadow-md!"
         />
       </form>
@@ -78,6 +88,9 @@
 <script lang="ts" setup>
 import { useRouter } from 'vue-router';
 import { useAuth } from 'vue-auth3';
+import { useForm } from 'vee-validate';
+import { authSchema, type AuthSchema } from '../utils/schemas/authValidationSchema';
+import { toTypedSchema } from '@vee-validate/zod';
 import InputText from 'primevue/inputtext';
 import Password from 'primevue/password';
 import Button from 'primevue/button';
@@ -86,6 +99,19 @@ import InputIcon from 'primevue/inputicon';
 
 const router = useRouter();
 const auth = useAuth();
+
+const { errors, defineField, handleSubmit, isSubmitting } = useForm<AuthSchema>({
+  validationSchema: toTypedSchema(authSchema),
+});
+
+const [email, emailProps] = defineField('email', {
+  validateOnModelUpdate: true,
+});
+const [password, passwordProps] = defineField('password', {
+  validateOnModelUpdate: true,
+});
+
+const onSubmit = handleSubmit(() => {});
 
 const goToRegistration = () => {
   router.push('/registration');
