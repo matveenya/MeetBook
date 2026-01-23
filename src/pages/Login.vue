@@ -29,11 +29,7 @@
         <Button type="submit" label="Log in" :loading="isSubmitting" />
       </form>
 
-      <div class="w-full flex items-center my-8">
-        <div class="flex-1 h-px bg-gray-200"></div>
-        <span class="px-4 text-gray-400 text-sm">Or</span>
-        <div class="flex-1 h-px bg-gray-200"></div>
-      </div>
+      <OrBlockAuth class="w-full flex items-center my-8" />
 
       <div class="w-full mb-10">
         <Button @click="loginWithGoogle" variant="outlined">
@@ -65,6 +61,7 @@ import { authSchema, type AuthSchema } from '../utils/schemas/authValidationSche
 import { toTypedSchema } from '@vee-validate/zod';
 import Input from '../components/ui/Input.vue';
 import Button from '../components/ui/Button.vue';
+import OrBlockAuth from '../components/OrBlockAuth.vue';
 
 const router = useRouter();
 const auth = useAuth();
