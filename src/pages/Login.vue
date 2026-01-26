@@ -77,7 +77,19 @@ const [password, passwordProps] = defineField('password', {
   validateOnModelUpdate: true,
 });
 
-const onSubmit = handleSubmit(() => {});
+const onSubmit = handleSubmit(async values => {
+  try {
+    await auth.login({
+      data: {
+        email: values.email,
+        password: values.password,
+      },
+    });
+    console.log('Вы вошли!');
+  } catch (err) {
+    console.error('Ошибка входа:', err);
+  }
+});
 
 const goToRegistration = () => {
   router.push('/registration');

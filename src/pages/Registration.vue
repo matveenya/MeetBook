@@ -52,6 +52,7 @@
 </template>
 
 <script lang="ts" setup>
+import { useAuth } from 'vue-auth3';
 import { useRouter } from 'vue-router';
 import { useForm } from 'vee-validate';
 import { authSchema, type AuthSchema } from '../utils/schemas/authValidationSchema';
@@ -61,6 +62,7 @@ import Button from '../components/ui/Button.vue';
 import OrBlockAuth from '../components/OrBlockAuth.vue';
 
 const router = useRouter();
+const auth = useAuth();
 
 const { errors, defineField, handleSubmit, isSubmitting } = useForm<AuthSchema>({
   validationSchema: toTypedSchema(authSchema),
@@ -82,7 +84,20 @@ const [confirmPassword, confrimPasswordProps] = defineField('confirmPassword', {
   validateOnModelUpdate: true,
 });
 
-const onSubmit = handleSubmit(() => {});
+const onSubmit = handleSubmit(async values => {
+  try {
+    await auth.register({
+      data: {
+        email: values.email,
+        password: values.password,
+        fullName: values.fullName,
+      },
+    });
+    console.log('Успешная регистрация!');
+  } catch (err) {
+    console.error('Ошибка:', err);
+  }
+});
 
 const goToLogIn = () => {
   router.push('/login');
