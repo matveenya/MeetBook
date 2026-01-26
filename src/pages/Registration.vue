@@ -93,9 +93,9 @@ const onSubmit = handleSubmit(async values => {
         fullName: values.fullName,
       },
     });
-    console.log('Успешная регистрация!');
+    console.log('Successful registration!');
   } catch (err) {
-    console.error('Ошибка:', err);
+    console.error('Error:', err);
   }
 });
 

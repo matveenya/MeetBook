@@ -81,9 +81,9 @@ const onSubmit = handleSubmit(async values => {
         password: values.password,
       },
     });
-    console.log('Вы вошли!');
+    console.log('You enter');
   } catch (err) {
-    console.error('Ошибка входа:', err);
+    console.error('Login error:', err);
   }
 });
 
