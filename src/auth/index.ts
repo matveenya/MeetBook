@@ -19,11 +19,23 @@ export const auth = createAuth({
   tokenDefaultName: 'token',
   tokenStore: ['cookie'],
 
+  registerData: {
+    url: '/auth/register',
+    method: 'POST',
+    redirect: '/',
+    autoLogin: true,
+  },
   loginData: {
     url: '/auth/login',
     method: 'POST',
     fetchUser: true,
     redirect: '/',
+  },
+  logoutData: {
+    url: '/auth/logout',
+    method: 'POST',
+    redirect: '/login',
+    makeRequest: true,
   },
   fetchData: {
     url: '/auth/user',
