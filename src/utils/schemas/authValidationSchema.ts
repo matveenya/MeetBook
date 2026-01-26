@@ -10,6 +10,14 @@ import {
   INVALID_CONFIRMPASSWORD_MESSAGE,
 } from './constants';
 
+export const loginSchema = z.object({
+  email: z
+    .string(REQUIRED_EMAIL_MESSAGE)
+    .email(INVALID_EMAIL_MESSAGE)
+    .min(1, REQUIRED_EMAIL_MESSAGE),
+  password: z.string(REQUIRED_PASSWORD_MESSAGE).min(6, INVALID_PASSWORD_MESSAGE),
+});
+
 export const authSchema = z
   .object({
     fullName: z.string(REQUIRED_FULLNAME_MESSAGE).min(4, INVALID_FULLNAME_MESSAGE),
@@ -28,3 +36,4 @@ export const authSchema = z
   });
 
 export type AuthSchema = z.infer<typeof authSchema>;
+export type LoginSchema = z.infer<typeof loginSchema>;

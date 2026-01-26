@@ -57,7 +57,7 @@
 import { useRouter } from 'vue-router';
 import { useAuth } from 'vue-auth3';
 import { useForm } from 'vee-validate';
-import { authSchema, type AuthSchema } from '../utils/schemas/authValidationSchema';
+import { loginSchema, type LoginSchema } from '../utils/schemas/authValidationSchema';
 import { toTypedSchema } from '@vee-validate/zod';
 import Input from '../components/ui/Input.vue';
 import Button from '../components/ui/Button.vue';
@@ -66,16 +66,12 @@ import OrBlockAuth from '../components/OrBlockAuth.vue';
 const router = useRouter();
 const auth = useAuth();
 
-const { errors, defineField, handleSubmit, isSubmitting } = useForm<AuthSchema>({
-  validationSchema: toTypedSchema(authSchema),
+const { errors, defineField, handleSubmit, isSubmitting } = useForm<LoginSchema>({
+  validationSchema: toTypedSchema(loginSchema),
 });
 
-const [email, emailProps] = defineField('email', {
-  validateOnModelUpdate: true,
-});
-const [password, passwordProps] = defineField('password', {
-  validateOnModelUpdate: true,
-});
+const [email, emailProps] = defineField('email', { validateOnModelUpdate: true });
+const [password, passwordProps] = defineField('password', { validateOnModelUpdate: true });
 
 const onSubmit = handleSubmit(async values => {
   try {
@@ -91,9 +87,7 @@ const onSubmit = handleSubmit(async values => {
   }
 });
 
-const goToRegistration = () => {
-  router.push('/registration');
-};
+const goToRegistration = () => router.push('/registration');
 
 const loginWithGoogle = () => {
   auth.oauth2('google', {
