@@ -16,8 +16,6 @@ export function useAuthErrorHandler() {
     errorMessage.value =
       error.response?.data?.error || 'An unexpected error occurred. Please try again.';
 
-    console.error('[Auth Error]:', errorMessage.value);
-
     return errorMessage.value;
   };
 

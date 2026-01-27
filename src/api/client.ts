@@ -17,7 +17,7 @@ apiClient.interceptors.response.use(
       }
 
       if (status === 403) {
-        console.error('Access denied: you do not have sufficient rights.');
+        return Promise.reject(new Error('Access denied: insufficient rights.'));
       }
     }
     return Promise.reject(error);

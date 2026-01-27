@@ -94,7 +94,13 @@ const onSubmit = handleSubmit(async (values: LoginSchema) => {
 const goToRegistration = () => router.push('/registration');
 
 const loginWithGoogle = () => {
-  auth.oauth2('google', {} as any); // eslint-disable-line @typescript-eslint/no-explicit-any
+  auth.oauth2('google', {
+    code: '',
+    state: '',
+    params: {},
+    url: '',
+    window: window,
+  });
 };
 </script>
 
