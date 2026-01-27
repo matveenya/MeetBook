@@ -60,9 +60,19 @@ import { toTypedSchema } from '@vee-validate/zod';
 import Input from '../components/ui/Input.vue';
 import Button from '../components/ui/Button.vue';
 import OrBlockAuth from '../components/OrBlockAuth.vue';
+import { useAuthStore } from '../store/auth';
 
 const router = useRouter();
 const auth = useAuth();
+const authStore = useAuthStore();
+
+interface AuthError {
+  response?: {
+    data?: {
+      error?: string;
+    };
+  };
+}
 
 const { errors, defineField, handleSubmit, isSubmitting } = useForm<AuthSchema>({
   validationSchema: toTypedSchema(authSchema),
@@ -84,7 +94,7 @@ const [confirmPassword, confrimPasswordProps] = defineField('confirmPassword', {
   validateOnModelUpdate: true,
 });
 
-const onSubmit = handleSubmit(async values => {
+const onSubmit = handleSubmit(async (values: AuthSchema) => {
   try {
     await auth.register({
       data: {
@@ -93,9 +103,15 @@ const onSubmit = handleSubmit(async values => {
         fullName: values.fullName,
       },
     });
+
+    authStore.syncUser();
+
     console.log('Successful registration!');
-  } catch (err) {
-    console.error('Error:', err);
+  } catch (err: unknown) {
+    const error = err as AuthError;
+    const errorMessage = error.response?.data?.error || 'Unknown error';
+
+    console.error('Registration error:', errorMessage);
   }
 });
 

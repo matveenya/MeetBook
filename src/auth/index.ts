@@ -1,4 +1,5 @@
 import axios from 'axios';
+import apiClient from '../api/client';
 import { createAuth } from 'vue-auth3';
 import driverAuthBasic from 'vue-auth3/dist/drivers/auth/basic';
 import driverHttpAxios from 'vue-auth3/dist/drivers/http/axios';
@@ -17,6 +18,7 @@ export const auth = createAuth({
       google: googleDriver,
     },
   },
+  http: apiClient,
   cookie: {
     name: 'token',
   },

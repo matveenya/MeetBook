@@ -62,6 +62,11 @@ import { toTypedSchema } from '@vee-validate/zod';
 import Input from '../components/ui/Input.vue';
 import Button from '../components/ui/Button.vue';
 import OrBlockAuth from '../components/OrBlockAuth.vue';
+import { useAuthStore } from '../store/auth';
+
+const router = useRouter();
+const auth = useAuth();
+const authStore = useAuthStore();
 
 interface AuthError {
   response?: {
@@ -71,9 +76,6 @@ interface AuthError {
   };
 }
 
-const router = useRouter();
-const auth = useAuth();
-
 const { errors, defineField, handleSubmit, isSubmitting } = useForm<LoginSchema>({
   validationSchema: toTypedSchema(loginSchema),
 });
@@ -81,7 +83,7 @@ const { errors, defineField, handleSubmit, isSubmitting } = useForm<LoginSchema>
 const [email, emailProps] = defineField('email', { validateOnModelUpdate: true });
 const [password, passwordProps] = defineField('password', { validateOnModelUpdate: true });
 
-const onSubmit = handleSubmit(async values => {
+const onSubmit = handleSubmit(async (values: LoginSchema) => {
   try {
     await auth.login({
       data: {
@@ -89,11 +91,12 @@ const onSubmit = handleSubmit(async values => {
         password: values.password,
       },
     });
-    console.log('You enter');
+    authStore.syncUser();
+    console.log('Login successful');
   } catch (err: unknown) {
     const error = err as AuthError;
-
     const errorMessage = error.response?.data?.error || 'Unknown error';
+
     console.error('Login error:', errorMessage);
   }
 });
