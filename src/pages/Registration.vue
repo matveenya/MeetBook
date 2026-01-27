@@ -97,8 +97,6 @@ const onSubmit = handleSubmit(async (values: AuthSchema) => {
         fullName: values.fullName,
       },
     });
-
-    console.log('Successful registration!');
   } catch (err: unknown) {
     handleAuthError(err);
   }

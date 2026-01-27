@@ -94,16 +94,7 @@ const onSubmit = handleSubmit(async (values: LoginSchema) => {
 const goToRegistration = () => router.push('/registration');
 
 const loginWithGoogle = () => {
-  auth.oauth2('google', {
-    code: '',
-    state: '',
-    params: {
-      redirect_uri: 'http://localhost:5173/login/google',
-      client_id: import.meta.env.VITE_CLIENT_ID,
-    },
-    url: 'https://accounts.google.com/o/oauth2/auth',
-    window: window,
-  });
+  auth.oauth2('google', {} as any); // eslint-disable-line @typescript-eslint/no-explicit-any
 };
 </script>
 
