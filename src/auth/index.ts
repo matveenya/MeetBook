@@ -23,7 +23,7 @@ export const auth = createAuth({
   cookie: {
     path: '/',
   },
-  tokenDefaultName: 'token',
+  tokenDefaultName: 'accessToken',
   tokenStore: ['cookie'],
 
   registerData: {
