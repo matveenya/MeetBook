@@ -1,18 +1,18 @@
 import axios, { AxiosError } from 'axios';
-import { auth } from '../auth';
 
 const apiClient = axios.create({
-  baseURL: 'http://localhost:3001',
+  baseURL: import.meta.env.VITE_API_BASE_URL,
   withCredentials: true,
 });
 
 apiClient.interceptors.response.use(
   response => response,
-  (error: AxiosError) => {
+  async (error: AxiosError) => {
     if (error.response) {
       const status = error.response.status;
 
       if (status === 401) {
+        const { auth } = await import('../auth');
         auth.logout({ redirect: '/login' });
       }
 

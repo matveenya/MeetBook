@@ -7,7 +7,7 @@ import googleDriver from './google';
 import { router } from '../router';
 import type { UserData, ApiResponse } from '../types/auth';
 
-axios.defaults.baseURL = 'http://localhost:3001';
+axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
 axios.defaults.withCredentials = true;
 
 export const auth = createAuth({
