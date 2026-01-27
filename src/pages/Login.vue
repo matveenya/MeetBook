@@ -63,6 +63,14 @@ import Input from '../components/ui/Input.vue';
 import Button from '../components/ui/Button.vue';
 import OrBlockAuth from '../components/OrBlockAuth.vue';
 
+interface AuthError {
+  response?: {
+    data?: {
+      error?: string;
+    };
+  };
+}
+
 const router = useRouter();
 const auth = useAuth();
 
@@ -82,8 +90,11 @@ const onSubmit = handleSubmit(async values => {
       },
     });
     console.log('You enter');
-  } catch (err) {
-    console.error('Login error:', err);
+  } catch (err: unknown) {
+    const error = err as AuthError;
+
+    const errorMessage = error.response?.data?.error || 'Unknown error';
+    console.error('Login error:', errorMessage);
   }
 });
 

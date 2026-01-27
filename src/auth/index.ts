@@ -46,5 +46,6 @@ export const auth = createAuth({
     method: 'GET',
     enabled: true,
   },
+  refreshData: { enabled: false },
   parseUserData: (res: any) => res.data, // eslint-disable-line @typescript-eslint/no-explicit-any
 } as any); // eslint-disable-line @typescript-eslint/no-explicit-any
