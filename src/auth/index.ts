@@ -1,11 +1,13 @@
 import axios from 'axios';
+import apiClient from '../api/client';
 import { createAuth } from 'vue-auth3';
 import driverAuthBasic from 'vue-auth3/dist/drivers/auth/basic';
 import driverHttpAxios from 'vue-auth3/dist/drivers/http/axios';
 import googleDriver from './google';
 import { router } from '../router';
+import type { UserData, ApiResponse } from '../types/auth';
 
-axios.defaults.baseURL = 'http://localhost:3001';
+axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
 axios.defaults.withCredentials = true;
 
 export const auth = createAuth({
@@ -17,8 +19,9 @@ export const auth = createAuth({
       google: googleDriver,
     },
   },
+  ...({ http: apiClient } as any), // eslint-disable-line @typescript-eslint/no-explicit-any
   cookie: {
-    name: 'token',
+    path: '/',
   },
   tokenDefaultName: 'token',
   tokenStore: ['cookie'],
@@ -46,5 +49,6 @@ export const auth = createAuth({
     method: 'GET',
     enabled: true,
   },
-  parseUserData: (res: any) => res.data, // eslint-disable-line @typescript-eslint/no-explicit-any
-} as any); // eslint-disable-line @typescript-eslint/no-explicit-any
+  refreshData: { enabled: false },
+  parseUserData: (res: { data: ApiResponse<UserData> }) => res.data.data,
+});

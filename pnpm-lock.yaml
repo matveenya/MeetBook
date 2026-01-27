@@ -23,9 +23,6 @@ importers:
       '@vee-validate/zod':
         specifier: ^4.15.1
         version: 4.15.1(vue@3.5.27(typescript@5.9.3))(zod@4.3.5)
-      '@websanova/vue-auth':
-        specifier: ^4.2.1
-        version: 4.2.1
       axios:
         specifier: ^1.13.2
         version: 1.13.2
@@ -760,9 +757,6 @@ packages:
         optional: true
       vue:
         optional: true
-
-  '@websanova/vue-auth@4.2.1':
-    resolution: {integrity: sha512-gc4WL3WzJMkj3wZmrBAP7U7WBAcVY0/a/YhCzMVR/iA1u/8QJlugq/320CRRbZ0Acz+qbGPhdm07IRE3U053yg==}
 
   acorn-jsx@5.3.2:
     resolution: {integrity: sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ==}
@@ -2254,8 +2248,6 @@ snapshots:
     optionalDependencies:
       typescript: 5.9.3
       vue: 3.5.27(typescript@5.9.3)
-
-  '@websanova/vue-auth@4.2.1': {}
 
   acorn-jsx@5.3.2(acorn@8.15.0):
     dependencies:

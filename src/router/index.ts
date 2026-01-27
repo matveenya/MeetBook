@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import Login from '../pages/Login.vue';
 import Registration from '../pages/Registration.vue';
 import MeetBook from '../pages/MeetBook.vue';
+import { auth } from '../auth';
 
 const routes = [
   {
@@ -33,4 +34,18 @@ const routes = [
 export const router = createRouter({
   history: createWebHistory(),
   routes,
+});
+
+router.beforeEach(async (to, _from, next) => {
+  await auth.ready();
+
+  const isAuthenticated = auth.check();
+
+  if (to.meta.auth === true && !isAuthenticated) {
+    next({ name: 'Login' });
+  } else if (to.meta.auth === false && isAuthenticated) {
+    next({ name: 'Home' });
+  } else {
+    next();
+  }
 });

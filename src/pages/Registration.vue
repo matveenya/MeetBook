@@ -4,6 +4,7 @@
       <h1 class="text-[#333] text-3xl font-medium mb-8">Registration</h1>
 
       <form class="w-full space-y-5" @submit.prevent="onSubmit">
+        <p v-if="errorMessage" class="text-red-500 text-sm mb-4 text-center">{{ errorMessage }}</p>
         <Input
           v-model="fullName"
           v-bind="fullNameProps"
@@ -60,6 +61,9 @@ import { toTypedSchema } from '@vee-validate/zod';
 import Input from '../components/ui/Input.vue';
 import Button from '../components/ui/Button.vue';
 import OrBlockAuth from '../components/OrBlockAuth.vue';
+import { useAuthErrorHandler } from '../composables/useAuthErrorHandler';
+
+const { errorMessage, handleAuthError } = useAuthErrorHandler();
 
 const router = useRouter();
 const auth = useAuth();
@@ -84,7 +88,7 @@ const [confirmPassword, confrimPasswordProps] = defineField('confirmPassword', {
   validateOnModelUpdate: true,
 });
 
-const onSubmit = handleSubmit(async values => {
+const onSubmit = handleSubmit(async (values: AuthSchema) => {
   try {
     await auth.register({
       data: {
@@ -93,9 +97,8 @@ const onSubmit = handleSubmit(async values => {
         fullName: values.fullName,
       },
     });
-    console.log('Successful registration!');
-  } catch (err) {
-    console.error('Error:', err);
+  } catch (err: unknown) {
+    handleAuthError(err);
   }
 });
 
