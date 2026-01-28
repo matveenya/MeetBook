@@ -4,7 +4,7 @@
       <nav class="p-4 bg-white border-b flex justify-between items-center">
         <span class="font-bold">MeetBook</span>
         <div class="flex items-center gap-4">
-          <span>{{ auth.user() }}</span>
+          <span>{{ userName }}</span>
           <button @click="auth.logout()" class="text-red-500 text-sm font-bold">Logout</button>
         </div>
       </nav>
@@ -15,8 +15,16 @@
 </template>
 
 <script lang="ts" setup>
+import { computed } from 'vue';
 import { useAuth } from 'vue-auth3';
+import type { AuthUserResponse } from './types/auth';
+
 const auth = useAuth();
+
+const userName = computed(() => {
+  const user = auth.user() as AuthUserResponse | null;
+  return user?.data?.name || user?.name || '';
+});
 </script>
 
 <style scoped></style>
