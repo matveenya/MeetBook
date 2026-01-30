@@ -12,25 +12,25 @@
           </p>
           <a
             href="#"
-            class="flex items-center gap-3 px-6 py-2.5 focus:bg-[#EEF2FF] focus:text-[#3E5CE9] rounded-xl font-semibold text-sm"
+            class="flex items-center gap-3 px-6 py-2.5 focus:bg-[#EEF2FF] focus:text-[#3E5CE9] hover:bg-[#EEF2FF] hover:text-[#3E5CE9] rounded-xl font-semibold text-sm"
           >
             <i class="pi pi-th-large"></i> Dashboard
           </a>
           <a
             href="#"
-            class="flex items-center gap-3 px-6 py-2.5 focus:bg-[#EEF2FF] focus:text-[#3E5CE9] rounded-xl font-semibold text-sm"
+            class="flex items-center gap-3 px-6 py-2.5 focus:bg-[#EEF2FF] focus:text-[#3E5CE9] hover:bg-[#EEF2FF] hover:text-[#3E5CE9] rounded-xl font-semibold text-sm"
           >
             <i class="pi pi-calendar"></i> Booking Management
           </a>
           <a
             href="#"
-            class="flex items-center gap-3 px-6 py-2.5 focus:bg-[#EEF2FF] focus:text-[#3E5CE9] rounded-xl font-semibold text-sm"
+            class="flex items-center gap-3 px-6 py-2.5 focus:bg-[#EEF2FF] focus:text-[#3E5CE9] hover:bg-[#EEF2FF] hover:text-[#3E5CE9] rounded-xl font-semibold text-sm"
           >
             <i class="pi pi-users"></i> Client Management
           </a>
           <a
             href="#"
-            class="flex items-center gap-3 px-6 py-2.5 focus:bg-[#EEF2FF] focus:text-[#3E5CE9] rounded-xl font-semibold text-sm"
+            class="flex items-center gap-3 px-6 py-2.5 focus:bg-[#EEF2FF] focus:text-[#3E5CE9] hover:bg-[#EEF2FF] hover:text-[#3E5CE9] rounded-xl font-semibold text-sm"
           >
             <i class="pi pi-comment"></i> Feedback
           </a>
@@ -41,13 +41,13 @@
           </p>
           <a
             href="#"
-            class="flex items-center gap-3 px-6 py-2.5 focus:bg-[#EEF2FF] focus:text-[#3E5CE9] rounded-xl font-semibold text-sm"
+            class="flex items-center gap-3 px-6 py-2.5 focus:bg-[#EEF2FF] focus:text-[#3E5CE9] hover:bg-[#EEF2FF] hover:text-[#3E5CE9] rounded-xl font-semibold text-sm"
           >
             <i class="pi pi-user-edit"></i> User Management
           </a>
           <a
             href="#"
-            class="flex items-center gap-3 px-6 py-2.5 focus:bg-[#EEF2FF] focus:text-[#3E5CE9] rounded-xl font-semibold text-sm"
+            class="flex items-center gap-3 px-6 py-2.5 focus:bg-[#EEF2FF] focus:text-[#3E5CE9] hover:bg-[#EEF2FF] hover:text-[#3E5CE9] rounded-xl font-semibold text-sm"
           >
             <i class="pi pi-cog"></i> Settings
           </a>
@@ -55,7 +55,7 @@
       </nav>
     </aside>
 
-    <div class="flex-1 flex flex-col">
+    <div class="flex-1 flex flex-col overflow-hidden">
       <header
         v-if="auth.check()"
         class="h-16 bg-white border-b border-gray-200 flex justify-between items-center px-8 shrink-0"
@@ -63,7 +63,7 @@
         <h2 class="text-lg font-bold">MeetBook Dashboard</h2>
         <div class="flex items-center gap-4">
           <button class="p-2 text-gray-400 hover:bg-gray-100 rounded-full relative">
-            <i class="pi pi-bell"></i>
+            <i class="pi pi-bell text-[#3E5CE9] cursor-pointer"></i>
           </button>
           <div class="flex flex-row gap-5 text-right">
             <div class="text-sm font-bold py-2.5">{{ userName }}</div>
@@ -77,7 +77,28 @@
         </div>
       </header>
 
-      <section></section>
+      <section class="flex gap-2 p-2 bg-white border-b border-gray-200 shrink-0">
+        <button
+          class="px-4 py-2 rounded-lg text-sm font-semibold text-gray-500 cursor-pointer bg-[#F0F1F3] hover:bg-[#172736] hover:text-white focus:bg-[#172736] focus:text-white transition"
+        >
+          Calendar View
+        </button>
+        <button
+          class="px-4 py-2 rounded-lg text-sm font-semibold text-gray-500 cursor-pointer bg-[#F0F1F3] hover:bg-[#172736] hover:text-white focus:bg-[#172736] focus:text-white transition"
+        >
+          Booking History
+        </button>
+        <button
+          class="px-4 py-2 rounded-lg text-sm font-semibold text-gray-500 cursor-pointer bg-[#F0F1F3] hover:bg-[#172736] hover:text-white focus:bg-[#172736] focus:text-white transition"
+        >
+          Booking Statistics
+        </button>
+        <button
+          class="px-4 py-2 rounded-lg text-sm font-semibold text-gray-500 cursor-pointer bg-[#F0F1F3] hover:bg-[#172736] hover:text-white focus:bg-[#172736] focus:text-white transition"
+        >
+          Cancel Request
+        </button>
+      </section>
     </div>
   </div>
 </template>
