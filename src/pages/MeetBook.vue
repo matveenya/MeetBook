@@ -1,11 +1,11 @@
 <template>
   <div class="flex h-screen bg-[#F8F9FB] font-sans text-gray-900">
     <aside class="flex flex-col">
-      <div class="p-6 text-2xl font-bold flex items-center">
+      <div class="p-4 text-2xl font-bold flex items-center">
         <h1 class="text-[#3E5CE9]">MeetBook</h1>
       </div>
 
-      <nav class="flex-1 space-y-1">
+      <nav class="flex-1 space-y-1 py-4">
         <div class="flex flex-col">
           <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4 px-6">
             Menu
