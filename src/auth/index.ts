@@ -49,6 +49,6 @@ export const auth = createAuth({
     method: 'GET',
     enabled: true,
   },
-  refreshData: { enabled: false },
+  refreshToken: { enabled: false },
   parseUserData: (res: { data: ApiResponse<UserData> }) => res.data.data,
 });
