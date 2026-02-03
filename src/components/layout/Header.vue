@@ -4,23 +4,19 @@
   >
     <h2 class="text-lg font-bold">MeetBook Dashboard</h2>
     <div class="flex items-center gap-4">
-      <button class="p-2 text-gray-400 hover:bg-gray-100 rounded-full relative">
+      <Button variant="icon">
         <i class="pi pi-bell text-[#3E5CE9] cursor-pointer"></i>
-      </button>
+      </Button>
       <div class="flex flex-row gap-5 text-right">
-        <div class="text-sm font-bold py-2.5">{{ userName }}</div>
-        <button
-          @click="$emit('logout')"
-          class="text-red-500 text-sm font-bold cursor-pointer hover:bg-gray-100 px-3 py-2.5 rounded-xl"
-        >
-          Logout
-        </button>
+        <div class="text-sm font-bold pt-4 whitespace-nowrap">{{ userName }}</div>
+        <Button @click="$emit('logout')" variant="danger" label="Logout" />
       </div>
     </div>
   </header>
 </template>
 
 <script setup lang="ts">
+import Button from '../ui/Button.vue';
 defineProps<{
   userName: string;
 }>();
