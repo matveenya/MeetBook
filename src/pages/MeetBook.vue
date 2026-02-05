@@ -25,9 +25,15 @@
       </nav>
     </aside>
 
-    <div class="flex-1 flex flex-col overflow-hidden">
+    <div class="flex-1 flex flex-col overflow-hidden px-6">
       <Header v-if="auth.check()" :userName="userName" @logout="auth.logout()" />
       <DashboardTabs />
+
+      <main class="flex-1 overflow-hidden flex flex-col">
+        <div class="flex-1 rounded-[32px] border border-gray-100 shadow-sm bg-white">
+          <CalendarBoard />
+        </div>
+      </main>
     </div>
   </div>
 </template>
@@ -39,6 +45,7 @@ import type { AuthUserResponse } from '../types/auth';
 import SidebarItem from '../components/ui/SidebarItem.vue';
 import Header from '../components/layout/Header.vue';
 import DashboardTabs from '../components/layout/DashboardTabs.vue';
+import CalendarBoard from '../components/calendar/CalendarBoard.vue';
 
 const auth = useAuth();
 
