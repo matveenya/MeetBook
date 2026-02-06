@@ -17,17 +17,11 @@
         <Button icon="pi pi-chevron-left" variant="icon" @click="goPrev" />
         <span class="font-bold text-gray-800 mx-4 w-48 text-center">{{ currentPeriodText }}</span>
         <Button icon="pi pi-chevron-right" variant="icon" @click="goNext" />
-        <Button label="Today" variant="primary" class="ml-4 py-2 px-6" @click="goToday" />
+        <Button label="Today" variant="primary" class="ml-4" @click="goToday" />
       </div>
 
       <div class="flex gap-3">
-        <Button
-          variant="outlined"
-          label="All members"
-          icon="pi pi-chevron-down"
-          iconPos="right"
-          class="py-2 px-4 rounded-lg text-gray-700 border-gray-300"
-        />
+        <Button variant="tab" label="All members" icon="pi pi-chevron-down" iconPos="right" />
       </div>
     </div>
 
@@ -44,6 +38,8 @@ import type { CalendarOptions } from '@fullcalendar/core';
 import resourceTimeGridPlugin from '@fullcalendar/resource-timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import Button from '../ui/Button.vue';
+import apiClient from '../../api/client';
+import type { UserResource } from '../../types/user';
 
 const fullCalendar = ref<InstanceType<typeof FullCalendar> | null>(null);
 const currentPeriodText = ref('');
@@ -76,6 +72,19 @@ const calendarOptions: CalendarOptions = reactive({
   stickyHeaderDates: true,
   resources: [],
   events: [],
+  resourceLabelContent: arg => {
+    return {
+      html: `
+        <div class="flex items-center gap-2 p-2">
+          <img src="https://ui-avatars.com/api/?name=${arg.resource.title}&background=random" 
+               class="w-8 h-8 rounded-full" />
+          <div class="text-left">
+            <div class="font-bold text-sm">${arg.resource.title}</div>
+          </div>
+        </div>
+      `,
+    };
+  },
 });
 
 const goNext = () => {
@@ -91,7 +100,24 @@ const goToday = () => {
   updateTitle();
 };
 
-onMounted(updateTitle);
+const fetchResources = async () => {
+  try {
+    const response = await apiClient.get('/api/users');
+    const users: UserResource[] = response.data.data;
+
+    calendarOptions.resources = users.map(user => ({
+      id: user.id.toString(),
+      title: user.name || user.email,
+    }));
+  } catch (error) {
+    console.error('Failed to fetch resources', error);
+  }
+};
+
+onMounted(() => {
+  updateTitle();
+  fetchResources();
+});
 </script>
 
 <style>
@@ -113,5 +139,9 @@ onMounted(updateTitle);
   font-size: 0.75rem;
   color: #6b7280;
   text-transform: lowercase;
+}
+
+.fc-day-today {
+  background-color: #ffffff !important;
 }
 </style>
