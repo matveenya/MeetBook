@@ -63,7 +63,7 @@ import { loginSchema, type LoginSchema } from '../utils/schemas/authValidationSc
 import { toTypedSchema } from '@vee-validate/zod';
 import Input from '../components/ui/Input.vue';
 import Button from '../components/ui/Button.vue';
-import OrBlockAuth from '../components/OrBlockAuth.vue';
+import OrBlockAuth from '../components/auth/OrBlockAuth.vue';
 import { useAuthErrorHandler } from '../composables/useAuthErrorHandler';
 
 const { errorMessage, handleAuthError } = useAuthErrorHandler();
