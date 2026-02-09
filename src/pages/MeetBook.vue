@@ -44,46 +44,19 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
+import { computed, onMounted } from 'vue';
 import { useAuth } from 'vue-auth3';
 import type { AuthUserResponse } from '../types/auth';
 import SidebarItem from '../components/ui/SidebarItem.vue';
 import Header from '../components/layout/Header.vue';
 import DashboardTabs from '../components/layout/DashboardTabs.vue';
 import CalendarBoard from '../components/calendar/CalendarBoard.vue';
-import { useRoute, useRouter } from 'vue-router';
-import axios from 'axios';
+import { useGoogleAuth } from '../composables/useGoogleAuth';
 
 const auth = useAuth();
-const route = useRoute();
-const router = useRouter();
-const isReady = ref(false);
 
-onMounted(async () => {
-  const code = route.query.code;
-
-  if (code) {
-    try {
-      await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL}/auth/google`,
-        { code },
-        { withCredentials: true }
-      );
-
-      router.replace({ query: {} });
-
-      await auth.fetch();
-    } catch (error) {
-      console.error('Error Google auth:', error);
-      auth.logout({ redirect: '/login' });
-    } finally {
-      isReady.value = true;
-    }
-  } else {
-    await auth.ready();
-    isReady.value = true;
-  }
-});
+const { isReady, initAuth } = useGoogleAuth();
+onMounted(initAuth);
 
 const userName = computed(() => {
   const user = auth.user() as AuthUserResponse | null;
