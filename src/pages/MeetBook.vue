@@ -25,28 +25,65 @@
     </aside>
 
     <div class="flex-1 flex flex-col overflow-hidden px-6">
-      <Header v-if="auth.check()" :userName="userName" @logout="auth.logout()" />
-      <DashboardTabs />
+      <template v-if="isReady && auth.check()">
+        <Header :userName="userName" @logout="auth.logout()" />
+        <DashboardTabs />
 
-      <main class="flex-1 overflow-hidden flex flex-col">
-        <div class="flex-1 rounded-[32px] border border-gray-100 shadow-sm bg-white">
-          <CalendarBoard />
-        </div>
-      </main>
+        <main class="flex-1 overflow-hidden flex flex-col">
+          <div class="flex-1 rounded-[32px] border border-gray-100 shadow-sm bg-white">
+            <CalendarBoard />
+          </div>
+        </main>
+      </template>
+
+      <div v-else-if="!isReady" class="flex-1 flex items-center justify-center">
+        <i class="pi pi-spin pi-spinner text-4xl text-[#3E5CE9]"></i>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useAuth } from 'vue-auth3';
 import type { AuthUserResponse } from '../types/auth';
 import SidebarItem from '../components/ui/SidebarItem.vue';
 import Header from '../components/layout/Header.vue';
 import DashboardTabs from '../components/layout/DashboardTabs.vue';
 import CalendarBoard from '../components/calendar/CalendarBoard.vue';
+import { useRoute, useRouter } from 'vue-router';
+import axios from 'axios';
 
 const auth = useAuth();
+const route = useRoute();
+const router = useRouter();
+const isReady = ref(false);
+
+onMounted(async () => {
+  const code = route.query.code;
+
+  if (code) {
+    try {
+      await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/auth/google`,
+        { code },
+        { withCredentials: true }
+      );
+
+      router.replace({ query: {} });
+
+      await auth.fetch();
+    } catch (error) {
+      console.error('Error Google auth:', error);
+      auth.logout({ redirect: '/login' });
+    } finally {
+      isReady.value = true;
+    }
+  } else {
+    await auth.ready();
+    isReady.value = true;
+  }
+});
 
 const userName = computed(() => {
   const user = auth.user() as AuthUserResponse | null;
