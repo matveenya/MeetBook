@@ -11,15 +11,14 @@
             Menu
           </p>
           <SidebarItem icon="pi pi-th-large"> Dashboard </SidebarItem>
-          <SidebarItem icon="pi pi-calendar"> Booking Management </SidebarItem>
-          <SidebarItem icon="pi pi-users"> Client Management </SidebarItem>
+          <SidebarItem icon="pi pi-calendar"> Meetings </SidebarItem>
+          <SidebarItem icon="pi pi-user-edit"> User Management </SidebarItem>
           <SidebarItem icon="pi pi-comment"> Feedback </SidebarItem>
         </div>
         <div class="flex flex-col">
           <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest my-4 px-6">
             Configurations
           </p>
-          <SidebarItem icon="pi pi-user-edit"> User Management </SidebarItem>
           <SidebarItem icon="pi pi-cog"> Settings </SidebarItem>
         </div>
       </nav>
