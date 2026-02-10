@@ -59,8 +59,10 @@ const calendarOptions: CalendarOptions = reactive({
     center: '',
     right: '',
   },
-  slotMinTime: '09:00:00',
-  slotMaxTime: '18:00:00',
+  height: '70vh',
+  slotMinTime: '01:00:00',
+  slotMaxTime: '24:00:00',
+  slotDuration: '01:00:00',
   slotLabelFormat: {
     hour: 'numeric',
     minute: '2-digit',
@@ -125,7 +127,7 @@ onMounted(() => {
   background: #fff;
 }
 .fc .fc-timegrid-slot {
-  height: 5rem !important;
+  height: 4rem !important;
   border: 1px solid #ebebeb !important;
 }
 .fc .fc-timegrid-now-indicator-line {
