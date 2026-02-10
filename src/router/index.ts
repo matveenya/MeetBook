@@ -38,6 +38,15 @@ export const router = createRouter({
 
 router.beforeEach(async (to, _from, next) => {
   await auth.ready();
+  //resolve prolem with reload
+  if (!auth.check()) {
+    try {
+      await auth.fetch();
+    } catch (e) {
+      console.error(e);
+    }
+  }
+  //resolve problem with reload
 
   const isAuthenticated = auth.check();
 
