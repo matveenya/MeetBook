@@ -21,7 +21,7 @@
       </div>
 
       <div class="flex gap-3">
-        <MultiSelect
+        <Select
           v-model="selectedUsers"
           :options="allUsers"
           optionLabel="title"
@@ -48,9 +48,9 @@ import type { CalendarOptions } from '@fullcalendar/core';
 import resourceTimeGridPlugin from '@fullcalendar/resource-timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import Button from '../ui/Button.vue';
+import Select from '../ui/Select.vue';
 import apiClient from '../../api/client';
 import type { UserResource, SelectedUser } from '../../types/user';
-import MultiSelect from 'primevue/multiselect';
 
 const fullCalendar = ref<InstanceType<typeof FullCalendar> | null>(null);
 const currentPeriodText = ref('');
