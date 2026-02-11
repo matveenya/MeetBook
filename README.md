@@ -4,32 +4,34 @@ The client-side application for the **MeetBook** booking system, built with **Vu
 
 ## 🚀 Tech Stack
 
-* **Framework:** [Vue 3](https://vuejs.org/) using the Composition API and `<script setup>`.
-* **Build Tool:** [Vite 7](https://vitejs.dev/).
-* **Language:** [TypeScript](https://www.typescriptlang.org/).
-* **State Management:** [Pinia](https://pinia.vuejs.org/).
-* **Styling:** [Tailwind CSS 4](https://tailwindcss.com/).
-* **UI Components:** [PrimeVue 4](https://primevue.org/) with the **Aura** theme.
-* **Calendar:** [FullCalendar 6](https://fullcalendar.io/) (Resource TimeGrid).
-* **Form Management:** [Vee-Validate](https://vee-validate.logaretm.com/v4/) + [Zod](https://zod.dev/).
-* **Authentication:** [vue-auth3](https://github.com/websanova/vue-auth3).
+- **Framework:** [Vue 3](https://vuejs.org/) using the Composition API and `<script setup>`.
+- **Build Tool:** [Vite 7](https://vitejs.dev/).
+- **Language:** [TypeScript](https://www.typescriptlang.org/).
+- **State Management:** [Pinia](https://pinia.vuejs.org/).
+- **Styling:** [Tailwind CSS 4](https://tailwindcss.com/).
+- **UI Components:** [PrimeVue 4](https://primevue.org/) with the **Aura** theme.
+- **Calendar:** [FullCalendar 6](https://fullcalendar.io/) (Resource TimeGrid).
+- **Form Management:** [Vee-Validate](https://vee-validate.logaretm.com/v4/) + [Zod](https://zod.dev/).
+- **Authentication:** [vue-auth3](https://github.com/websanova/vue-auth3).
 
 ## ✨ Features
 
-* **Interactive Dashboard:** A centralized view for managing bookings and schedules using FullCalendar with integrated resource management.
-* **Resource Management:** Dynamically loads members (resources) from the backend API for calendar assignment.
-* **Secure Routing:** Navigation guards that verify authentication status and wait for the auth driver to be ready before granting access to protected routes.
-* **OAuth2 Integration:** Native support for Google Authentication.
-* **Token Refresh:** Automated JWT handling using Axios interceptors to refresh access tokens via the `/auth/refresh` endpoint.
-* **Custom UI Kit:** Reusable atomic components including `Button`, `Input`, and `SidebarItem` with specialized variants and Tailwind CSS integration.
+- **Interactive Dashboard:** A centralized view for managing bookings and schedules using FullCalendar with integrated resource management.
+- **Resource Management:** Dynamically loads members (resources) from the backend API for calendar assignment.
+- **Secure Routing:** Navigation guards that verify authentication status and wait for the auth driver to be ready before granting access to protected routes.
+- **OAuth2 Integration:** Native support for Google Authentication.
+- **Token Refresh:** Automated JWT handling using Axios interceptors to refresh access tokens via the `/auth/refresh` endpoint.
+- **Custom UI Kit:** Reusable atomic components including `Button`, `Input`, and `SidebarItem` with specialized variants and Tailwind CSS integration.
 
 ## ⚙️ Setup & Installation
 
 ### Prerequisites
-* Node.js (v20+ recommended)
-* [pnpm](https://pnpm.io/) package manager
+
+- Node.js (v20+ recommended)
+- [pnpm](https://pnpm.io/) package manager
 
 ### Installation
+
 1.  Clone the repository.
 2.  Install dependencies:
     ```bash
@@ -42,6 +44,9 @@ The client-side application for the **MeetBook** booking system, built with **Vu
     ```
 
 ### Development
+
 Run the development server:
+
 ```bash
 pnpm run dev
+```

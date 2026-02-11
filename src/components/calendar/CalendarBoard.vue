@@ -21,7 +21,17 @@
       </div>
 
       <div class="flex gap-3">
-        <Button variant="tab" label="All members" icon="pi pi-chevron-down" iconPos="right" />
+        <MultiSelect
+          v-model="selectedUsers"
+          :options="allUsers"
+          optionLabel="title"
+          placeholder="All members"
+          :maxSelectedLabels="2"
+          @change="updateCalendarResources"
+          :filter="true"
+          filterPlaceholder="Search members..."
+          emptyFilterMessage="No members found"
+        />
       </div>
     </div>
 
@@ -39,10 +49,14 @@ import resourceTimeGridPlugin from '@fullcalendar/resource-timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import Button from '../ui/Button.vue';
 import apiClient from '../../api/client';
-import type { UserResource } from '../../types/user';
+import type { UserResource, SelectedUser } from '../../types/user';
+import MultiSelect from 'primevue/multiselect';
 
 const fullCalendar = ref<InstanceType<typeof FullCalendar> | null>(null);
 const currentPeriodText = ref('');
+
+const allUsers = ref<SelectedUser[]>([]);
+const selectedUsers = ref<SelectedUser[]>([]);
 
 const updateTitle = () => {
   const api = fullCalendar.value?.getApi();
@@ -102,15 +116,24 @@ const goToday = () => {
   updateTitle();
 };
 
+const updateCalendarResources = () => {
+  calendarOptions.resources =
+    selectedUsers.value.length === 0 ? allUsers.value : selectedUsers.value;
+};
+
 const fetchResources = async () => {
   try {
     const response = await apiClient.get('/api/users');
     const users: UserResource[] = response.data.data;
 
-    calendarOptions.resources = users.map(user => ({
+    const mappedUsers = users.map(user => ({
       id: user.id.toString(),
       title: user.name || user.email,
     }));
+
+    allUsers.value = mappedUsers;
+    selectedUsers.value = mappedUsers;
+    calendarOptions.resources = mappedUsers;
   } catch (error) {
     console.error('Failed to fetch resources', error);
   }
