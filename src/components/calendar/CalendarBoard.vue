@@ -44,19 +44,50 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted } from 'vue';
 import FullCalendar from '@fullcalendar/vue3';
-import type { CalendarOptions } from '@fullcalendar/core';
+import type { CalendarOptions, DateSelectArg } from '@fullcalendar/core';
 import resourceTimeGridPlugin from '@fullcalendar/resource-timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import Button from '../ui/Button.vue';
 import Select from '../ui/Select.vue';
 import apiClient from '../../api/client';
 import type { UserResource, SelectedUser } from '../../types/user';
+import type { Meeting } from '../../types/meeting';
 
 const fullCalendar = ref<InstanceType<typeof FullCalendar> | null>(null);
 const currentPeriodText = ref('');
-
 const allUsers = ref<SelectedUser[]>([]);
 const selectedUsers = ref<SelectedUser[]>([]);
+
+const handleDateSelect = async (selectInfo: DateSelectArg) => {
+  const title = prompt('Name meeting:');
+  const calendarApi = selectInfo.view.calendar;
+
+  calendarApi.unselect();
+
+  if (title) {
+    try {
+      const { data } = await apiClient.post<{ data: Meeting }>('/api/meetings', {
+        title,
+        start: selectInfo.startStr,
+        end: selectInfo.endStr,
+        userId: selectInfo.resource?.id,
+      });
+
+      calendarApi.addEvent(data.data);
+    } catch (error) {
+      console.error('Error creating a meeting:', error);
+    }
+  }
+};
+
+const fetchMeetings = async () => {
+  try {
+    const { data } = await apiClient.get<{ data: Meeting[] }>('/api/meetings');
+    calendarOptions.events = data.data;
+  } catch (error) {
+    console.error('Error loading meetings:', error);
+  }
+};
 
 const updateTitle = () => {
   const api = fullCalendar.value?.getApi();
@@ -85,9 +116,12 @@ const calendarOptions: CalendarOptions = reactive({
   },
   allDaySlot: false,
   expandRows: true,
+  selectable: true,
+  select: handleDateSelect,
+  editable: true,
   stickyHeaderDates: true,
   resources: [],
-  events: [],
+  events: [] as Meeting[],
   resourceLabelContent: arg => {
     return {
       html: `
@@ -142,6 +176,7 @@ const fetchResources = async () => {
 onMounted(() => {
   updateTitle();
   fetchResources();
+  fetchMeetings();
 });
 </script>
 
