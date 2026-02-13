@@ -27,7 +27,7 @@
           optionLabel="title"
           placeholder="All members"
           :maxSelectedLabels="2"
-          @change="updateCalendarResources"
+          @change="updateResources"
           :filter="true"
           filterPlaceholder="Search members..."
           emptyFilterMessage="No members found"
@@ -42,68 +42,39 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue';
+import { ref, reactive, onMounted, watch } from 'vue';
 import FullCalendar from '@fullcalendar/vue3';
-import type { CalendarOptions, DateSelectArg } from '@fullcalendar/core';
 import resourceTimeGridPlugin from '@fullcalendar/resource-timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
+import type { CalendarOptions, DateSelectArg } from '@fullcalendar/core';
 import Button from '../ui/Button.vue';
 import Select from '../ui/Select.vue';
-import apiClient from '../../api/client';
-import type { UserResource, SelectedUser } from '../../types/user';
-import type { Meeting } from '../../types/meeting';
+import { useCalendarNavigation } from '../../composables/useCalendarNavigation';
+import { useCalendarResources } from '../../composables/useCalendarResources';
+import { useCalendarEvents } from '../../composables/useCalendarEvents';
 
 const fullCalendar = ref<InstanceType<typeof FullCalendar> | null>(null);
-const currentPeriodText = ref('');
-const allUsers = ref<SelectedUser[]>([]);
-const selectedUsers = ref<SelectedUser[]>([]);
+
+const { currentPeriodText, updateTitle, goNext, goPrev, goToday } =
+  useCalendarNavigation(fullCalendar);
+const { allUsers, selectedUsers, resources, fetchResources, updateResources } =
+  useCalendarResources();
+const { meetings, fetchMeetings, createMeeting } = useCalendarEvents();
 
 const handleDateSelect = async (selectInfo: DateSelectArg) => {
-  const title = prompt('Name meeting:');
   const calendarApi = selectInfo.view.calendar;
-
   calendarApi.unselect();
 
-  if (title) {
-    try {
-      const { data } = await apiClient.post<{ data: Meeting }>('/api/meetings', {
-        title,
-        start: selectInfo.startStr,
-        end: selectInfo.endStr,
-        userId: selectInfo.resource?.id,
-      });
-
-      calendarApi.addEvent(data.data);
-    } catch (error) {
-      console.error('Error creating a meeting:', error);
-    }
-  }
-};
-
-const fetchMeetings = async () => {
-  try {
-    const { data } = await apiClient.get<{ data: Meeting[] }>('/api/meetings');
-    calendarOptions.events = data.data;
-  } catch (error) {
-    console.error('Error loading meetings:', error);
-  }
-};
-
-const updateTitle = () => {
-  const api = fullCalendar.value?.getApi();
-  if (api) {
-    currentPeriodText.value = api.view.title;
+  const newMeeting = await createMeeting(selectInfo);
+  if (newMeeting) {
+    calendarApi.addEvent(newMeeting);
   }
 };
 
 const calendarOptions: CalendarOptions = reactive({
   plugins: [resourceTimeGridPlugin, interactionPlugin],
   initialView: 'resourceTimeGridDay',
-  headerToolbar: {
-    left: '',
-    center: '',
-    right: '',
-  },
+  headerToolbar: false,
   height: '70vh',
   slotMinTime: '01:00:00',
   slotMaxTime: '24:00:00',
@@ -120,63 +91,31 @@ const calendarOptions: CalendarOptions = reactive({
   select: handleDateSelect,
   editable: true,
   stickyHeaderDates: true,
-  resources: [],
-  events: [] as Meeting[],
-  resourceLabelContent: arg => {
-    return {
-      html: `
-        <div class="flex items-center gap-2 p-2">
-          <img src="https://ui-avatars.com/api/?name=${arg.resource.title}&background=random" 
-               class="w-8 h-8 rounded-full" />
-          <div class="text-left">
-            <div class="font-bold text-sm">${arg.resource.title}</div>
-          </div>
+  resources: resources.value,
+  events: meetings.value,
+  resourceLabelContent: arg => ({
+    html: `
+      <div class="flex items-center gap-2 p-2">
+        <img src="https://ui-avatars.com/api/?name=${arg.resource.title}&background=random" 
+             class="w-8 h-8 rounded-full" />
+        <div class="text-left">
+          <div class="font-bold text-sm">${arg.resource.title}</div>
         </div>
-      `,
-    };
-  },
+      </div>
+    `,
+  }),
 });
 
-const goNext = () => {
-  fullCalendar.value?.getApi().next();
+watch(resources, newVal => {
+  calendarOptions.resources = newVal;
+});
+watch(meetings, newVal => {
+  calendarOptions.events = newVal;
+});
+
+onMounted(async () => {
   updateTitle();
-};
-const goPrev = () => {
-  fullCalendar.value?.getApi().prev();
-  updateTitle();
-};
-const goToday = () => {
-  fullCalendar.value?.getApi().today();
-  updateTitle();
-};
-
-const updateCalendarResources = () => {
-  calendarOptions.resources =
-    selectedUsers.value.length === 0 ? allUsers.value : selectedUsers.value;
-};
-
-const fetchResources = async () => {
-  try {
-    const response = await apiClient.get('/api/users');
-    const users: UserResource[] = response.data.data;
-
-    const mappedUsers = users.map(user => ({
-      id: user.id.toString(),
-      title: user.name || user.email,
-    }));
-
-    allUsers.value = mappedUsers;
-    selectedUsers.value = mappedUsers;
-    calendarOptions.resources = mappedUsers;
-  } catch (error) {
-    console.error('Failed to fetch resources', error);
-  }
-};
-
-onMounted(() => {
-  updateTitle();
-  fetchResources();
-  fetchMeetings();
+  await Promise.all([fetchResources(), fetchMeetings()]);
 });
 </script>
 
