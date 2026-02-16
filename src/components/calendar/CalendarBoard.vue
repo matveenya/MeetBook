@@ -38,6 +38,36 @@
     <div class="flex-1 overflow-auto p-4 h-screen">
       <FullCalendar ref="fullCalendar" :options="calendarOptions" />
     </div>
+
+    <Dialog v-model:visible="showModal" modal header="Create meeting" :style="{ width: '30rem' }">
+      <div class="flex flex-col gap-4">
+        <div class="flex flex-col gap-2">
+          <label for="title" class="font-bold">Meeting name</label>
+          <InputText id="title" v-model="newMeetingForm.title" class="w-full" autofocus />
+        </div>
+        <div class="flex flex-col gap-2">
+          <label class="font-bold">Invite members</label>
+          <MultiSelect
+            v-model="newMeetingForm.invitedUsers"
+            :options="allUsers"
+            optionLabel="title"
+            placeholder="Select members"
+            :filter="true"
+            display="chip"
+            class="w-full"
+          />
+        </div>
+      </div>
+      <template #footer>
+        <Button label="Cancel" variant="outlined" @click="showModal = false" :fluid="false" />
+        <Button
+          label="Create"
+          @click="confirmCreate"
+          :disabled="!newMeetingForm.title"
+          :fluid="false"
+        />
+      </template>
+    </Dialog>
   </div>
 </template>
 
@@ -49,11 +79,22 @@ import interactionPlugin from '@fullcalendar/interaction';
 import type { CalendarOptions, DateSelectArg } from '@fullcalendar/core';
 import Button from '../ui/Button.vue';
 import Select from '../ui/Select.vue';
+import Dialog from 'primevue/dialog';
+import InputText from 'primevue/inputtext';
+import MultiSelect from 'primevue/multiselect';
 import { useCalendarNavigation } from '../../composables/useCalendarNavigation';
 import { useCalendarResources } from '../../composables/useCalendarResources';
 import { useCalendarEvents } from '../../composables/useCalendarEvents';
+import type { SelectedUser } from '../../types/user';
 
 const fullCalendar = ref<InstanceType<typeof FullCalendar> | null>(null);
+
+const showModal = ref(false);
+const selectInfoStorage = ref<DateSelectArg | null>(null);
+const newMeetingForm = reactive({
+  title: '',
+  invitedUsers: [] as SelectedUser[],
+});
 
 const { currentPeriodText, updateTitle, goNext, goPrev, goToday } =
   useCalendarNavigation(fullCalendar);
@@ -61,13 +102,30 @@ const { allUsers, selectedUsers, resources, fetchResources, updateResources } =
   useCalendarResources();
 const { meetings, fetchMeetings, createMeeting } = useCalendarEvents();
 
-const handleDateSelect = async (selectInfo: DateSelectArg) => {
-  const calendarApi = selectInfo.view.calendar;
-  calendarApi.unselect();
+const handleDateSelect = (selectInfo: DateSelectArg) => {
+  selectInfoStorage.value = selectInfo;
+  newMeetingForm.title = '';
+  newMeetingForm.invitedUsers = [];
+  showModal.value = true;
+};
 
-  const newMeeting = await createMeeting(selectInfo);
-  if (newMeeting) {
-    calendarApi.addEvent(newMeeting);
+const confirmCreate = async () => {
+  if (!selectInfoStorage.value) return;
+
+  const invitedIds = newMeetingForm.invitedUsers.map(u => u.id);
+
+  const result = await createMeeting({
+    title: newMeetingForm.title,
+    start: selectInfoStorage.value.startStr,
+    end: selectInfoStorage.value.endStr,
+    userId: selectInfoStorage.value.resource?.id || '',
+    invitedIds: invitedIds,
+  });
+
+  if (result) {
+    selectInfoStorage.value.view.calendar.addEvent(result);
+    await fetchMeetings();
+    showModal.value = false;
   }
 };
 

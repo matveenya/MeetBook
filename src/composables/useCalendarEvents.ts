@@ -1,7 +1,6 @@
 import { ref } from 'vue';
 import apiClient from '../api/client';
 import type { Meeting } from '../types/meeting';
-import type { DateSelectArg } from '@fullcalendar/core';
 
 export function useCalendarEvents() {
   const meetings = ref<Meeting[]>([]);
@@ -15,17 +14,15 @@ export function useCalendarEvents() {
     }
   };
 
-  const createMeeting = async (selectInfo: DateSelectArg) => {
-    const title = prompt('Name meeting:');
-    if (!title) return null;
-
+  const createMeeting = async (meetingData: {
+    title: string;
+    start: string;
+    end: string;
+    userId: string;
+    invitedIds: string[];
+  }) => {
     try {
-      const { data } = await apiClient.post<{ data: Meeting }>('/api/meetings', {
-        title,
-        start: selectInfo.startStr,
-        end: selectInfo.endStr,
-        userId: selectInfo.resource?.id,
-      });
+      const { data } = await apiClient.post<{ data: Meeting }>('/api/meetings', meetingData);
       return data.data;
     } catch (error) {
       console.error('Error creating a meeting:', error);
@@ -33,9 +30,5 @@ export function useCalendarEvents() {
     }
   };
 
-  return {
-    meetings,
-    fetchMeetings,
-    createMeeting,
-  };
+  return { meetings, fetchMeetings, createMeeting };
 }
