@@ -5,3 +5,11 @@ export interface Meeting {
   end: string;
   resourceId: string;
 }
+
+export interface MeetingData {
+  title: string;
+  start: string;
+  end: string;
+  userId: string;
+  invitedIds: string[];
+}

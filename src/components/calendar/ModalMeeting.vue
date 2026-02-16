@@ -4,19 +4,13 @@
     @update:visible="$emit('update:visible', $event)"
     @show="onModalShow"
     modal
-    header="Create meeting"
+    :header="isEdit ? 'Edit meeting' : 'Create meeting'"
     :style="{ width: '30rem' }"
   >
     <div class="flex flex-col gap-4">
       <div class="flex flex-col gap-2">
         <label for="title" class="font-bold">Meeting name</label>
-        <Input
-          ref="titleInput"
-          id="title"
-          v-model="form.title"
-          placeholder="Enter meeting name"
-          class="w-full"
-        />
+        <Input ref="titleInput" id="title" v-model="form.title" class="w-full" />
       </div>
       <div class="flex flex-col gap-2">
         <label class="font-bold">Invite members</label>
@@ -26,20 +20,35 @@
           optionLabel="title"
           placeholder="Select members"
           display="chip"
-          :filter="true"
           class="w-full"
         />
       </div>
     </div>
 
     <template #footer>
-      <Button
-        label="Cancel"
-        variant="outlined"
-        @click="$emit('update:visible', false)"
-        :fluid="false"
-      />
-      <Button label="Create" @click="$emit('confirm')" :disabled="!form.title" :fluid="false" />
+      <div class="flex justify-between w-full">
+        <Button
+          v-if="isEdit"
+          label="Delete"
+          variant="danger"
+          @click="$emit('delete')"
+          :fluid="false"
+        />
+        <div class="flex gap-2" :class="{ 'ml-auto': !isEdit }">
+          <Button
+            label="Cancel"
+            variant="outlined"
+            @click="$emit('update:visible', false)"
+            :fluid="false"
+          />
+          <Button
+            :label="isEdit ? 'Save' : 'Create'"
+            @click="$emit('confirm')"
+            :disabled="!form.title"
+            :fluid="false"
+          />
+        </div>
+      </div>
     </template>
   </Dialog>
 </template>
@@ -52,29 +61,24 @@ import Input from '../ui/Input.vue';
 import Select from '../ui/Select.vue';
 import type { SelectedUser } from '../../types/user';
 
-interface MeetingForm {
-  title: string;
-  invitedUsers: SelectedUser[];
-}
-
 defineProps<{
   visible: boolean;
   allUsers: SelectedUser[];
+  isEdit: boolean;
 }>();
 
-const form = defineModel<MeetingForm>('form', { required: true });
+const form = defineModel<{
+  title: string;
+  invitedUsers: SelectedUser[];
+}>('form', { required: true });
 
-defineEmits(['update:visible', 'confirm']);
+defineEmits(['update:visible', 'confirm', 'delete']);
 
 const titleInput = ref<InstanceType<typeof Input> | null>(null);
 
 const onModalShow = async () => {
   await nextTick();
-
   const inputEl = titleInput.value?.$el?.querySelector('input') as HTMLInputElement | null;
-
-  if (inputEl) {
-    inputEl.focus();
-  }
+  if (inputEl) inputEl.focus();
 };
 </script>

@@ -1,6 +1,6 @@
 import { ref } from 'vue';
 import apiClient from '../api/client';
-import type { Meeting } from '../types/meeting';
+import type { Meeting, MeetingData } from '../types/meeting';
 
 export function useCalendarEvents() {
   const meetings = ref<Meeting[]>([]);
@@ -14,13 +14,7 @@ export function useCalendarEvents() {
     }
   };
 
-  const createMeeting = async (meetingData: {
-    title: string;
-    start: string;
-    end: string;
-    userId: string;
-    invitedIds: string[];
-  }) => {
+  const createMeeting = async (meetingData: MeetingData) => {
     try {
       const { data } = await apiClient.post<{ data: Meeting }>('/api/meetings', meetingData);
       return data.data;
@@ -30,5 +24,25 @@ export function useCalendarEvents() {
     }
   };
 
-  return { meetings, fetchMeetings, createMeeting };
+  const updateMeeting = async (id: string, meetingData: Partial<MeetingData>) => {
+    try {
+      const { data } = await apiClient.patch<{ data: Meeting }>(`/api/meetings/${id}`, meetingData);
+      return data.data;
+    } catch (error) {
+      console.error('Error updating meeting:', error);
+      return null;
+    }
+  };
+
+  const deleteMeeting = async (id: string) => {
+    try {
+      await apiClient.delete(`/api/meetings/${id}`);
+      return true;
+    } catch (error) {
+      console.error('Error delete meeting:', error);
+      return false;
+    }
+  };
+
+  return { meetings, fetchMeetings, createMeeting, updateMeeting, deleteMeeting };
 }

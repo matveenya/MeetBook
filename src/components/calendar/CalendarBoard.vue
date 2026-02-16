@@ -43,7 +43,9 @@
       v-model:visible="showModal"
       v-model:form="newMeetingForm"
       :allUsers="allUsers"
+      :isEdit="isEditMode"
       @confirm="confirmCreate"
+      @delete="handleDelete"
     />
   </div>
 </template>
@@ -53,7 +55,7 @@ import { ref, reactive, onMounted, watch } from 'vue';
 import FullCalendar from '@fullcalendar/vue3';
 import resourceTimeGridPlugin from '@fullcalendar/resource-timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import type { CalendarOptions, DateSelectArg } from '@fullcalendar/core';
+import type { CalendarOptions, DateSelectArg, EventClickArg } from '@fullcalendar/core';
 import Button from '../ui/Button.vue';
 import Select from '../ui/Select.vue';
 import ModalMeeting from './ModalMeeting.vue';
@@ -65,6 +67,8 @@ import type { SelectedUser } from '../../types/user';
 const fullCalendar = ref<InstanceType<typeof FullCalendar> | null>(null);
 const showModal = ref(false);
 const selectInfoStorage = ref<DateSelectArg | null>(null);
+const isEditMode = ref(false);
+const selectedEventId = ref<string | null>(null);
 
 const newMeetingForm = reactive({
   title: '',
@@ -75,7 +79,8 @@ const { currentPeriodText, updateTitle, goNext, goPrev, goToday } =
   useCalendarNavigation(fullCalendar);
 const { allUsers, selectedUsers, resources, fetchResources, updateResources } =
   useCalendarResources();
-const { meetings, fetchMeetings, createMeeting } = useCalendarEvents();
+const { meetings, fetchMeetings, createMeeting, updateMeeting, deleteMeeting } =
+  useCalendarEvents();
 
 const handleDateSelect = (selectInfo: DateSelectArg) => {
   selectInfoStorage.value = selectInfo;
@@ -84,21 +89,44 @@ const handleDateSelect = (selectInfo: DateSelectArg) => {
   showModal.value = true;
 };
 
+const handleEventClick = (clickInfo: EventClickArg) => {
+  isEditMode.value = true;
+  selectedEventId.value = clickInfo.event.id;
+
+  newMeetingForm.title = clickInfo.event.title;
+  newMeetingForm.invitedUsers = clickInfo.event.extendedProps.invitedUsers || [];
+
+  showModal.value = true;
+};
+
 const confirmCreate = async () => {
-  if (!selectInfoStorage.value) return;
-
-  const result = await createMeeting({
+  const payload = {
     title: newMeetingForm.title,
-    start: selectInfoStorage.value.startStr,
-    end: selectInfoStorage.value.endStr,
-    userId: selectInfoStorage.value.resource?.id || '',
     invitedIds: newMeetingForm.invitedUsers.map(u => u.id),
-  });
+  };
 
-  if (result) {
-    selectInfoStorage.value.view.calendar.addEvent(result);
-    await fetchMeetings();
-    showModal.value = false;
+  if (isEditMode.value && selectedEventId.value) {
+    const result = await updateMeeting(selectedEventId.value, payload);
+    if (result) await fetchMeetings();
+  } else if (selectInfoStorage.value) {
+    const result = await createMeeting({
+      ...payload,
+      start: selectInfoStorage.value.startStr,
+      end: selectInfoStorage.value.endStr,
+      userId: selectInfoStorage.value.resource?.id || '',
+    });
+    if (result) await fetchMeetings();
+  }
+  showModal.value = false;
+};
+
+const handleDelete = async () => {
+  if (selectedEventId.value) {
+    const success = await deleteMeeting(selectedEventId.value);
+    if (success) {
+      await fetchMeetings();
+      showModal.value = false;
+    }
   }
 };
 
@@ -112,7 +140,12 @@ const calendarOptions: CalendarOptions = reactive({
   slotDuration: '01:00:00',
   allDaySlot: false,
   selectable: true,
-  select: handleDateSelect,
+  eventClick: handleEventClick,
+  select: info => {
+    isEditMode.value = false;
+    selectedEventId.value = null;
+    handleDateSelect(info);
+  },
   editable: true,
   resources: resources.value,
   events: meetings.value,
