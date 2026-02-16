@@ -39,35 +39,12 @@
       <FullCalendar ref="fullCalendar" :options="calendarOptions" />
     </div>
 
-    <Dialog v-model:visible="showModal" modal header="Create meeting" :style="{ width: '30rem' }">
-      <div class="flex flex-col gap-4">
-        <div class="flex flex-col gap-2">
-          <label for="title" class="font-bold">Meeting name</label>
-          <InputText id="title" v-model="newMeetingForm.title" class="w-full" autofocus />
-        </div>
-        <div class="flex flex-col gap-2">
-          <label class="font-bold">Invite members</label>
-          <MultiSelect
-            v-model="newMeetingForm.invitedUsers"
-            :options="allUsers"
-            optionLabel="title"
-            placeholder="Select members"
-            :filter="true"
-            display="chip"
-            class="w-full"
-          />
-        </div>
-      </div>
-      <template #footer>
-        <Button label="Cancel" variant="outlined" @click="showModal = false" :fluid="false" />
-        <Button
-          label="Create"
-          @click="confirmCreate"
-          :disabled="!newMeetingForm.title"
-          :fluid="false"
-        />
-      </template>
-    </Dialog>
+    <ModalMeeting
+      v-model:visible="showModal"
+      v-model:form="newMeetingForm"
+      :allUsers="allUsers"
+      @confirm="confirmCreate"
+    />
   </div>
 </template>
 
@@ -79,18 +56,16 @@ import interactionPlugin from '@fullcalendar/interaction';
 import type { CalendarOptions, DateSelectArg } from '@fullcalendar/core';
 import Button from '../ui/Button.vue';
 import Select from '../ui/Select.vue';
-import Dialog from 'primevue/dialog';
-import InputText from 'primevue/inputtext';
-import MultiSelect from 'primevue/multiselect';
+import ModalMeeting from './ModalMeeting.vue';
 import { useCalendarNavigation } from '../../composables/useCalendarNavigation';
 import { useCalendarResources } from '../../composables/useCalendarResources';
 import { useCalendarEvents } from '../../composables/useCalendarEvents';
 import type { SelectedUser } from '../../types/user';
 
 const fullCalendar = ref<InstanceType<typeof FullCalendar> | null>(null);
-
 const showModal = ref(false);
 const selectInfoStorage = ref<DateSelectArg | null>(null);
+
 const newMeetingForm = reactive({
   title: '',
   invitedUsers: [] as SelectedUser[],
@@ -112,14 +87,12 @@ const handleDateSelect = (selectInfo: DateSelectArg) => {
 const confirmCreate = async () => {
   if (!selectInfoStorage.value) return;
 
-  const invitedIds = newMeetingForm.invitedUsers.map(u => u.id);
-
   const result = await createMeeting({
     title: newMeetingForm.title,
     start: selectInfoStorage.value.startStr,
     end: selectInfoStorage.value.endStr,
     userId: selectInfoStorage.value.resource?.id || '',
-    invitedIds: invitedIds,
+    invitedIds: newMeetingForm.invitedUsers.map(u => u.id),
   });
 
   if (result) {
@@ -137,18 +110,10 @@ const calendarOptions: CalendarOptions = reactive({
   slotMinTime: '01:00:00',
   slotMaxTime: '24:00:00',
   slotDuration: '01:00:00',
-  slotLabelFormat: {
-    hour: 'numeric',
-    minute: '2-digit',
-    meridiem: 'short',
-    omitZeroMinute: false,
-  },
   allDaySlot: false,
-  expandRows: true,
   selectable: true,
   select: handleDateSelect,
   editable: true,
-  stickyHeaderDates: true,
   resources: resources.value,
   events: meetings.value,
   resourceLabelContent: arg => ({
@@ -156,9 +121,7 @@ const calendarOptions: CalendarOptions = reactive({
       <div class="flex items-center gap-2 p-2">
         <img src="https://ui-avatars.com/api/?name=${arg.resource.title}&background=random" 
              class="w-8 h-8 rounded-full" />
-        <div class="text-left">
-          <div class="font-bold text-sm">${arg.resource.title}</div>
-        </div>
+        <div class="font-bold text-sm">${arg.resource.title}</div>
       </div>
     `,
   }),
