@@ -5,11 +5,9 @@
         <div class="bg-[#F0F1F3] p-3 rounded-xl">
           <i class="pi pi-calendar text-gray-600 text-xl"></i>
         </div>
-        <div>
-          <div class="flex items-baseline gap-2">
-            <span class="text-2xl font-bold">15</span>
-            <span class="text-gray-500 font-medium">Total Bookings</span>
-          </div>
+        <div class="flex items-baseline gap-2">
+          <span class="text-2xl font-bold">{{ meetings.length }}</span>
+          <span class="text-gray-500 font-medium">Total Bookings</span>
         </div>
       </div>
 
@@ -41,10 +39,10 @@
 
     <ModalMeeting
       v-model:visible="showModal"
-      v-model:form="newMeetingForm"
+      v-model:form="form"
       :allUsers="allUsers"
       :isEdit="isEditMode"
-      @confirm="confirmCreate"
+      @confirm="handleConfirm"
       @delete="handleDelete"
     />
   </div>
@@ -53,27 +51,17 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted, watch } from 'vue';
 import FullCalendar from '@fullcalendar/vue3';
-import type { CalendarOptions, DateSelectArg, EventClickArg } from '@fullcalendar/core';
+import type { CalendarOptions } from '@fullcalendar/core';
 import Button from '../ui/Button.vue';
 import Select from '../ui/Select.vue';
 import ModalMeeting from './ModalMeeting.vue';
 import { useCalendarNavigation } from '../../composables/useCalendarNavigation';
 import { useCalendarResources } from '../../composables/useCalendarResources';
 import { useCalendarEvents } from '../../composables/useCalendarEvents';
-import { getMeetingParticipants } from '../../utils/calendarUtils';
+import { useCalendarBoard } from '../../composables/useCalendarBoard';
 import { BASE_CALENDAR_OPTIONS, renderResourceHeader } from '../../utils/calendarConfig';
-import type { SelectedUser } from '../../types/user';
 
 const fullCalendar = ref<InstanceType<typeof FullCalendar> | null>(null);
-const showModal = ref(false);
-const selectInfoStorage = ref<DateSelectArg | null>(null);
-const isEditMode = ref(false);
-const selectedEventId = ref<string | null>(null);
-
-const newMeetingForm = reactive({
-  title: '',
-  invitedUsers: [] as SelectedUser[],
-});
 
 const { currentPeriodText, updateTitle, goNext, goPrev, goToday } =
   useCalendarNavigation(fullCalendar);
@@ -82,67 +70,20 @@ const { allUsers, selectedUsers, resources, fetchResources, updateResources } =
 const { meetings, fetchMeetings, createMeeting, updateMeeting, deleteMeeting } =
   useCalendarEvents();
 
-const handleDateSelect = (selectInfo: DateSelectArg) => {
-  selectInfoStorage.value = selectInfo;
-  newMeetingForm.title = '';
-  newMeetingForm.invitedUsers = [];
-  showModal.value = true;
-};
-
-const handleEventClick = (clickInfo: EventClickArg) => {
-  isEditMode.value = true;
-  selectedEventId.value = clickInfo.event.id;
-  newMeetingForm.title = clickInfo.event.title;
-
-  const resource = clickInfo.event.getResources()[0];
-
-  newMeetingForm.invitedUsers = getMeetingParticipants(meetings.value, allUsers.value, {
-    title: clickInfo.event.title,
-    start: clickInfo.event.start?.getTime(),
-    end: clickInfo.event.end?.getTime(),
-    resourceId: resource ? String(resource.id) : null,
+const { showModal, isEditMode, form, openCreateModal, openEditModal, handleConfirm, handleDelete } =
+  useCalendarBoard(meetings, allUsers, {
+    create: createMeeting,
+    update: updateMeeting,
+    remove: deleteMeeting,
+    refresh: fetchMeetings,
   });
-
-  showModal.value = true;
-};
-
-const confirmCreate = async () => {
-  const payload = {
-    title: newMeetingForm.title,
-    invitedIds: newMeetingForm.invitedUsers.map(u => u.id),
-  };
-
-  if (isEditMode.value && selectedEventId.value) {
-    const result = await updateMeeting(selectedEventId.value, payload);
-    if (result) await fetchMeetings();
-  } else if (selectInfoStorage.value) {
-    const result = await createMeeting({
-      ...payload,
-      start: selectInfoStorage.value.startStr,
-      end: selectInfoStorage.value.endStr,
-      userId: selectInfoStorage.value.resource?.id || '',
-    });
-    if (result) await fetchMeetings();
-  }
-  showModal.value = false;
-};
-
-const handleDelete = async () => {
-  if (selectedEventId.value) {
-    const success = await deleteMeeting(selectedEventId.value);
-    if (success) {
-      await fetchMeetings();
-      showModal.value = false;
-    }
-  }
-};
 
 const calendarOptions: CalendarOptions = reactive({
   ...BASE_CALENDAR_OPTIONS,
   events: meetings,
   resources: resources,
-  eventClick: handleEventClick,
-  select: handleDateSelect,
+  eventClick: openEditModal,
+  select: openCreateModal,
   resourceLabelContent: renderResourceHeader,
 });
 
