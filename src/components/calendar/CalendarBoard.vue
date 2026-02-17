@@ -1,41 +1,23 @@
 <template>
   <div class="flex flex-col flex-1 bg-white">
     <div class="flex justify-between items-center p-6 border-b border-gray-100">
-      <div class="flex items-center gap-4">
-        <div class="bg-[#F0F1F3] p-3 rounded-xl">
-          <i class="pi pi-calendar text-gray-600 text-xl"></i>
-        </div>
-        <div class="flex items-baseline gap-2">
-          <span class="text-2xl font-bold">{{ meetings.length }}</span>
-          <span class="text-gray-500 font-medium">Total Bookings</span>
-        </div>
-      </div>
+      <CalendarStats :totalBookings="meetings.length" />
 
-      <div class="flex items-center gap-1">
-        <Button icon="pi pi-chevron-left" variant="icon" @click="goPrev" />
-        <span class="font-bold text-gray-800 mx-4 w-48 text-center">{{ currentPeriodText }}</span>
-        <Button icon="pi pi-chevron-right" variant="icon" @click="goNext" />
-        <Button label="Today" variant="primary" class="ml-4" @click="goToday" />
-      </div>
+      <CalendarNavigation
+        :title="currentPeriodText"
+        @prev="goPrev"
+        @next="goNext"
+        @today="goToday"
+      />
 
-      <div class="flex gap-3">
-        <Select
-          v-model="selectedUsers"
-          :options="allUsers"
-          optionLabel="title"
-          placeholder="All members"
-          :maxSelectedLabels="2"
-          @change="updateResources"
-          :filter="true"
-          filterPlaceholder="Search members..."
-          emptyFilterMessage="No members found"
-        />
-      </div>
+      <CalendarResourceFilter
+        v-model="selectedUsers"
+        :options="allUsers"
+        @change="updateResources"
+      />
     </div>
 
-    <div class="flex-1 overflow-auto p-4 h-screen">
-      <FullCalendar ref="fullCalendar" :options="calendarOptions" />
-    </div>
+    <CalendarView ref="fullCalendarWrapper" :options="calendarOptions" />
 
     <ModalMeeting
       v-model:visible="showModal"
@@ -49,11 +31,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted, watch } from 'vue';
+import { ref, reactive, onMounted, watch, computed, type Ref } from 'vue';
 import FullCalendar from '@fullcalendar/vue3';
 import type { CalendarOptions } from '@fullcalendar/core';
-import Button from '../ui/Button.vue';
-import Select from '../ui/Select.vue';
+import CalendarStats from './CalendarStats.vue';
+import CalendarNavigation from './CalendarNavigation.vue';
+import CalendarResourceFilter from './CalendarResourceFilter.vue';
+import CalendarView from './CalendarView.vue';
 import ModalMeeting from './ModalMeeting.vue';
 import { useCalendarNavigation } from '../../composables/useCalendarNavigation';
 import { useCalendarResources } from '../../composables/useCalendarResources';
@@ -61,12 +45,18 @@ import { useCalendarEvents } from '../../composables/useCalendarEvents';
 import { useCalendarBoard } from '../../composables/useCalendarBoard';
 import { BASE_CALENDAR_OPTIONS, renderResourceHeader } from '../../utils/calendarConfig';
 
-const fullCalendar = ref<InstanceType<typeof FullCalendar> | null>(null);
+const fullCalendarWrapper = ref<InstanceType<typeof CalendarView> | null>(null);
+
+const calendarProxy = computed(() => ({
+  getApi: () => fullCalendarWrapper.value?.getApi(),
+})) as unknown as Ref<InstanceType<typeof FullCalendar> | null>;
 
 const { currentPeriodText, updateTitle, goNext, goPrev, goToday } =
-  useCalendarNavigation(fullCalendar);
+  useCalendarNavigation(calendarProxy);
+
 const { allUsers, selectedUsers, resources, fetchResources, updateResources } =
   useCalendarResources();
+
 const { meetings, fetchMeetings, createMeeting, updateMeeting, deleteMeeting } =
   useCalendarEvents();
 
@@ -95,33 +85,7 @@ watch(meetings, newVal => {
 });
 
 onMounted(async () => {
-  updateTitle();
+  setTimeout(() => updateTitle(), 0);
   await Promise.all([fetchResources(), fetchMeetings()]);
 });
 </script>
-
-<style>
-.fc .fc-resource-timegrid-col {
-  background: #fff;
-}
-.fc .fc-timegrid-slot {
-  height: 4rem !important;
-  border: 1px solid #ebebeb !important;
-}
-.fc .fc-timegrid-now-indicator-line {
-  border-color: #3e5ce9;
-  border-width: 2px;
-}
-.fc-theme-standard .fc-scrollgrid {
-  border: none !important;
-}
-.fc .fc-timegrid-slot-label-cushion {
-  font-size: 0.75rem;
-  color: #6b7280;
-  text-transform: lowercase;
-}
-
-.fc-day-today {
-  background-color: #ffffff !important;
-}
-</style>
