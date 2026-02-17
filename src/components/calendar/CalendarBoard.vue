@@ -92,10 +92,31 @@ const handleDateSelect = (selectInfo: DateSelectArg) => {
 const handleEventClick = (clickInfo: EventClickArg) => {
   isEditMode.value = true;
   selectedEventId.value = clickInfo.event.id;
-
   newMeetingForm.title = clickInfo.event.title;
-  newMeetingForm.invitedUsers = clickInfo.event.extendedProps.invitedUsers || [];
 
+  const startTime = clickInfo.event.start?.getTime();
+  const endTime = clickInfo.event.end?.getTime();
+  const title = clickInfo.event.title;
+
+  const resource = clickInfo.event.getResources()[0];
+  const currentResourceId = resource ? String(resource.id) : null;
+
+  const participants = meetings.value
+    .filter(m => {
+      const mStart = new Date(m.start).getTime();
+      const mEnd = new Date(m.end).getTime();
+
+      return (
+        m.title === title &&
+        mStart === startTime &&
+        mEnd === endTime &&
+        (currentResourceId === null || String(m.resourceId) !== currentResourceId)
+      );
+    })
+    .map(m => allUsers.value.find(u => String(u.id) === String(m.resourceId)))
+    .filter((u): u is SelectedUser => !!u);
+
+  newMeetingForm.invitedUsers = participants;
   showModal.value = true;
 };
 
