@@ -53,8 +53,6 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted, watch } from 'vue';
 import FullCalendar from '@fullcalendar/vue3';
-import resourceTimeGridPlugin from '@fullcalendar/resource-timegrid';
-import interactionPlugin from '@fullcalendar/interaction';
 import type { CalendarOptions, DateSelectArg, EventClickArg } from '@fullcalendar/core';
 import Button from '../ui/Button.vue';
 import Select from '../ui/Select.vue';
@@ -62,6 +60,8 @@ import ModalMeeting from './ModalMeeting.vue';
 import { useCalendarNavigation } from '../../composables/useCalendarNavigation';
 import { useCalendarResources } from '../../composables/useCalendarResources';
 import { useCalendarEvents } from '../../composables/useCalendarEvents';
+import { getMeetingParticipants } from '../../utils/calendarUtils';
+import { BASE_CALENDAR_OPTIONS, renderResourceHeader } from '../../utils/calendarConfig';
 import type { SelectedUser } from '../../types/user';
 
 const fullCalendar = ref<InstanceType<typeof FullCalendar> | null>(null);
@@ -94,29 +94,15 @@ const handleEventClick = (clickInfo: EventClickArg) => {
   selectedEventId.value = clickInfo.event.id;
   newMeetingForm.title = clickInfo.event.title;
 
-  const startTime = clickInfo.event.start?.getTime();
-  const endTime = clickInfo.event.end?.getTime();
-  const title = clickInfo.event.title;
-
   const resource = clickInfo.event.getResources()[0];
-  const currentResourceId = resource ? String(resource.id) : null;
 
-  const participants = meetings.value
-    .filter(m => {
-      const mStart = new Date(m.start).getTime();
-      const mEnd = new Date(m.end).getTime();
+  newMeetingForm.invitedUsers = getMeetingParticipants(meetings.value, allUsers.value, {
+    title: clickInfo.event.title,
+    start: clickInfo.event.start?.getTime(),
+    end: clickInfo.event.end?.getTime(),
+    resourceId: resource ? String(resource.id) : null,
+  });
 
-      return (
-        m.title === title &&
-        mStart === startTime &&
-        mEnd === endTime &&
-        (currentResourceId === null || String(m.resourceId) !== currentResourceId)
-      );
-    })
-    .map(m => allUsers.value.find(u => String(u.id) === String(m.resourceId)))
-    .filter((u): u is SelectedUser => !!u);
-
-  newMeetingForm.invitedUsers = participants;
   showModal.value = true;
 };
 
@@ -152,33 +138,12 @@ const handleDelete = async () => {
 };
 
 const calendarOptions: CalendarOptions = reactive({
-  plugins: [resourceTimeGridPlugin, interactionPlugin],
-  initialView: 'resourceTimeGridDay',
-  headerToolbar: false,
-  height: '70vh',
-  slotMinTime: '01:00:00',
-  slotMaxTime: '24:00:00',
-  slotDuration: '01:00:00',
-  allDaySlot: false,
-  selectable: true,
+  ...BASE_CALENDAR_OPTIONS,
+  events: meetings,
+  resources: resources,
   eventClick: handleEventClick,
-  select: info => {
-    isEditMode.value = false;
-    selectedEventId.value = null;
-    handleDateSelect(info);
-  },
-  editable: true,
-  resources: resources.value,
-  events: meetings.value,
-  resourceLabelContent: arg => ({
-    html: `
-      <div class="flex items-center gap-2 p-2">
-        <img src="https://ui-avatars.com/api/?name=${arg.resource.title}&background=random" 
-             class="w-8 h-8 rounded-full" />
-        <div class="font-bold text-sm">${arg.resource.title}</div>
-      </div>
-    `,
-  }),
+  select: handleDateSelect,
+  resourceLabelContent: renderResourceHeader,
 });
 
 watch(resources, newVal => {

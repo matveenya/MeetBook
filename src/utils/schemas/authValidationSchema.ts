@@ -1,37 +1,28 @@
 import { z } from 'zod';
-import {
-  REQUIRED_EMAIL_MESSAGE,
-  INVALID_EMAIL_MESSAGE,
-  REQUIRED_PASSWORD_MESSAGE,
-  INVALID_PASSWORD_MESSAGE,
-  REQUIRED_FULLNAME_MESSAGE,
-  INVALID_FULLNAME_MESSAGE,
-  REQUIRED_CONFIRMPASSWORD_MESSAGE,
-  INVALID_CONFIRMPASSWORD_MESSAGE,
-} from './constants';
+import { AUTH_MESSAGES } from '@/constants/authMessages';
 
 export const loginSchema = z.object({
   email: z
-    .string(REQUIRED_EMAIL_MESSAGE)
-    .email(INVALID_EMAIL_MESSAGE)
-    .min(1, REQUIRED_EMAIL_MESSAGE),
-  password: z.string(REQUIRED_PASSWORD_MESSAGE).min(6, INVALID_PASSWORD_MESSAGE),
+    .string(AUTH_MESSAGES.REQUIRED_EMAIL)
+    .email(AUTH_MESSAGES.INVALID_EMAIL)
+    .min(1, AUTH_MESSAGES.REQUIRED_EMAIL),
+  password: z.string(AUTH_MESSAGES.REQUIRED_PASSWORD).min(6, AUTH_MESSAGES.INVALID_PASSWORD),
 });
 
 export const authSchema = z
   .object({
-    fullName: z.string(REQUIRED_FULLNAME_MESSAGE).min(4, INVALID_FULLNAME_MESSAGE),
+    fullName: z.string(AUTH_MESSAGES.REQUIRED_FULLNAME).min(4, AUTH_MESSAGES.INVALID_FULLNAME),
     email: z
-      .string(REQUIRED_EMAIL_MESSAGE)
-      .email(INVALID_EMAIL_MESSAGE)
-      .min(1, REQUIRED_EMAIL_MESSAGE),
-    password: z.string(REQUIRED_PASSWORD_MESSAGE).min(6, INVALID_PASSWORD_MESSAGE),
+      .string(AUTH_MESSAGES.REQUIRED_EMAIL)
+      .email(AUTH_MESSAGES.INVALID_EMAIL)
+      .min(1, AUTH_MESSAGES.REQUIRED_EMAIL),
+    password: z.string(AUTH_MESSAGES.REQUIRED_PASSWORD).min(6, AUTH_MESSAGES.INVALID_PASSWORD),
     confirmPassword: z
-      .string(REQUIRED_CONFIRMPASSWORD_MESSAGE)
-      .min(6, INVALID_CONFIRMPASSWORD_MESSAGE),
+      .string(AUTH_MESSAGES.REQUIRED_CONFIRMPASSWORD)
+      .min(6, AUTH_MESSAGES.INVALID_CONFIRMPASSWORD),
   })
   .refine(data => data.password === data.confirmPassword, {
-    message: INVALID_CONFIRMPASSWORD_MESSAGE,
+    message: AUTH_MESSAGES.INVALID_CONFIRMPASSWORD,
     path: ['confirmPassword'],
   });
 
