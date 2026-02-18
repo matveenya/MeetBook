@@ -1,28 +1,6 @@
 <template>
   <div class="flex h-screen bg-[#F8F9FB] font-sans text-gray-900">
-    <aside class="flex flex-col">
-      <div class="p-4 text-2xl font-bold flex items-center">
-        <h1 class="text-[#3E5CE9]">MeetBook</h1>
-      </div>
-
-      <nav class="flex-1 space-y-1 py-4">
-        <div class="flex flex-col">
-          <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4 px-6">
-            Menu
-          </p>
-          <SidebarItem icon="pi pi-th-large"> Dashboard </SidebarItem>
-          <SidebarItem icon="pi pi-calendar"> Meetings </SidebarItem>
-          <SidebarItem icon="pi pi-user-edit"> User Management </SidebarItem>
-          <SidebarItem icon="pi pi-comment"> Feedback </SidebarItem>
-        </div>
-        <div class="flex flex-col">
-          <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest my-4 px-6">
-            Configurations
-          </p>
-          <SidebarItem icon="pi pi-cog"> Settings </SidebarItem>
-        </div>
-      </nav>
-    </aside>
+    <Sidebar />
 
     <div class="flex-1 flex flex-col overflow-hidden px-6">
       <template v-if="isReady && auth.check()">
@@ -47,7 +25,7 @@
 import { computed, onMounted } from 'vue';
 import { useAuth } from 'vue-auth3';
 import type { AuthUserResponse } from '../types/auth';
-import SidebarItem from '../components/ui/SidebarItem.vue';
+import Sidebar from '@/components/layout/Sidebar.vue';
 import Header from '../components/layout/Header.vue';
 import DashboardTabs from '../components/layout/DashboardTabs.vue';
 import CalendarBoard from '../components/calendar/CalendarBoard.vue';
