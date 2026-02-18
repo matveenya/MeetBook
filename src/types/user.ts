@@ -3,3 +3,8 @@ export interface UserResource {
   name: string;
   email: string;
 }
+
+export interface SelectedUser {
+  id: string;
+  title: string;
+}
