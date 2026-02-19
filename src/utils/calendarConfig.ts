@@ -15,6 +15,7 @@ export const BASE_CALENDAR_OPTIONS: Partial<CalendarOptions> = {
   initialView: 'resourceTimeGridDay',
   headerToolbar: false,
   height: '70vh',
+  nowIndicator: true,
   slotMinTime: '01:00:00',
   slotMaxTime: '24:00:00',
   slotDuration: '01:00:00',

@@ -87,6 +87,7 @@ export function useCalendarBoard(
     showModal,
     isEditMode,
     form,
+    selectedEventId,
     openCreateModal,
     openEditModal,
     handleConfirm,
