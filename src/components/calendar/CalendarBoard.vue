@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col flex-1 bg-white">
     <div class="flex justify-between items-center p-6 border-b border-gray-100">
-      <CalendarStats :totalBookings="meetings.length" />
+      <CalendarStats :totalMeetings="dailyMeetingsCount" />
 
       <CalendarNavigation
         :title="currentPeriodText"
@@ -41,33 +41,34 @@
 import { ref, reactive, onMounted, watch, computed, type Ref } from 'vue';
 import FullCalendar from '@fullcalendar/vue3';
 import type { CalendarOptions } from '@fullcalendar/core';
+import { useAuth } from 'vue-auth3';
 import CalendarStats from './CalendarStats.vue';
 import CalendarNavigation from './CalendarNavigation.vue';
 import CalendarResourceFilter from './CalendarResourceFilter.vue';
 import CalendarView from './CalendarView.vue';
 import ModalMeeting from './ModalMeeting.vue';
 import VideoCall from '../video/VideoCall.vue';
+import type { AuthUserResponse } from '../../types/auth';
 import { useCalendarNavigation } from '../../composables/useCalendarNavigation';
 import { useCalendarResources } from '../../composables/useCalendarResources';
 import { useCalendarEvents } from '../../composables/useCalendarEvents';
 import { useCalendarBoard } from '../../composables/useCalendarBoard';
 import { BASE_CALENDAR_OPTIONS, renderResourceHeader } from '../../utils/calendarConfig';
+import { getAccountDailyMeetings, getTotalMeetings } from '../../utils/calendarMeetings';
 
 const fullCalendarWrapper = ref<InstanceType<typeof CalendarView> | null>(null);
+const auth = useAuth();
 
 const activeCallMeetingId = ref<string | null>(null);
 
 const onStartVideo = () => {
   const meeting = meetings.value.find(m => String(m.id) === String(selectedEventId.value));
 
-  console.log('Поиск по ID:', selectedEventId.value);
-  console.log('Найденная встреча:', meeting);
-
   if (meeting && meeting.groupId) {
     activeCallMeetingId.value = meeting.groupId;
     showModal.value = false;
   } else {
-    console.error('Ошибка: встреча не найдена или отсутствует Group ID', {
+    console.error('Error: Meeting not found or Group ID missing', {
       selectedId: selectedEventId.value,
       meeting: meeting,
     });
@@ -102,6 +103,22 @@ const {
   remove: deleteMeeting,
   refresh: fetchMeetings,
 });
+
+const currentDayDate = computed(() => {
+  const api = fullCalendarWrapper.value?.getApi();
+  return api && currentPeriodText.value !== undefined ? api.getDate() : null;
+});
+
+const accountUser = computed(() => auth.user() as AuthUserResponse | null);
+const accountUserId = computed(() =>
+  String(accountUser.value?.data?.id ?? accountUser.value?.id ?? '')
+);
+
+const dailyMeetings = computed(() => {
+  return getAccountDailyMeetings(meetings.value, accountUserId.value, currentDayDate.value);
+});
+
+const dailyMeetingsCount = computed(() => getTotalMeetings(dailyMeetings.value));
 
 const calendarOptions: CalendarOptions = reactive({
   ...BASE_CALENDAR_OPTIONS,
