@@ -4,6 +4,7 @@ export interface Meeting {
   start: string;
   end: string;
   resourceId: string;
+  groupId: string;
 }
 
 export interface MeetingData {

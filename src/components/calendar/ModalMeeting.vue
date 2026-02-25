@@ -36,6 +36,13 @@
         />
         <div class="flex gap-2" :class="{ 'ml-auto': !isEdit }">
           <Button
+            v-if="isEdit"
+            label="Video call"
+            icon="pi pi-video"
+            :fluid="false"
+            @click="$emit('startVideo')"
+          />
+          <Button
             label="Cancel"
             variant="outlined"
             @click="$emit('update:visible', false)"
@@ -72,7 +79,7 @@ const form = defineModel<{
   invitedUsers: SelectedUser[];
 }>('form', { required: true });
 
-defineEmits(['update:visible', 'confirm', 'delete']);
+defineEmits(['update:visible', 'confirm', 'delete', 'startVideo']);
 
 const titleInput = ref<InstanceType<typeof Input> | null>(null);
 
