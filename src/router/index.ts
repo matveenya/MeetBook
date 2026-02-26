@@ -29,6 +29,10 @@ const routes = [
     component: () => import('../pages/MeetBook.vue'),
     meta: { auth: true },
   },
+  {
+    path: '/:pathMatch(.*)*',
+    redirect: '/',
+  },
 ];
 
 export const router = createRouter({
@@ -37,24 +41,28 @@ export const router = createRouter({
 });
 
 router.beforeEach(async (to, _from, next) => {
-  await auth.ready();
-  //resolve prolem with reload
-  if (!auth.check()) {
+  const requiresAuth = to.meta.auth === true;
+  const isGuestOnly = to.meta.auth === false;
+
+  if (requiresAuth && !auth.check()) {
     try {
       await auth.fetch();
-    } catch (e) {
-      console.error(e);
+    } catch {
+      // Ignore here; protected-route redirect is handled below.
     }
   }
-  //resolve problem with reload
 
   const isAuthenticated = auth.check();
 
-  if (to.meta.auth === true && !isAuthenticated) {
+  if (requiresAuth && !isAuthenticated) {
     next({ name: 'Login' });
-  } else if (to.meta.auth === false && isAuthenticated) {
-    next({ name: 'Home' });
-  } else {
-    next();
+    return;
   }
+
+  if (isGuestOnly && isAuthenticated) {
+    next({ name: 'Home' });
+    return;
+  }
+
+  next();
 });

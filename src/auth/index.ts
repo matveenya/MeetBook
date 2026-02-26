@@ -1,9 +1,9 @@
 import axios from 'axios';
 import apiClient from '../api/client';
 import { createAuth } from 'vue-auth3';
-import driverAuthBasic from 'vue-auth3/dist/drivers/auth/basic';
 import driverHttpAxios from 'vue-auth3/dist/drivers/http/axios';
 import googleDriver from './google';
+import cookieSessionDriver from './cookieSessionDriver';
 import { router } from '../router';
 import type { UserData, ApiResponse } from '../types/auth';
 
@@ -12,8 +12,11 @@ axios.defaults.withCredentials = true;
 
 export const auth = createAuth({
   plugins: { router },
+  authRedirect: '/login',
+  forbiddenRedirect: '/',
+  notFoundRedirect: '/',
   drivers: {
-    auth: driverAuthBasic,
+    auth: cookieSessionDriver,
     http: driverHttpAxios,
     oauth2: {
       google: googleDriver,
@@ -23,8 +26,7 @@ export const auth = createAuth({
   cookie: {
     path: '/',
   },
-  tokenDefaultName: 'accessToken',
-  tokenStore: ['cookie'],
+  stores: ['storage'],
 
   registerData: {
     url: '/auth/register',
