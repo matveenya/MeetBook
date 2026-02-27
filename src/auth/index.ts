@@ -26,7 +26,6 @@ export const auth = createAuth({
   cookie: {
     path: '/',
   },
-  stores: ['storage'],
 
   registerData: {
     url: '/auth/register',
@@ -50,7 +49,12 @@ export const auth = createAuth({
     url: '/auth/user',
     method: 'GET',
     enabled: true,
+    waitRefresh: true,
   },
-  refreshToken: { enabled: false },
+  refreshToken: {
+    url: '/auth/refresh',
+    method: 'POST',
+    enabled: true,
+  },
   parseUserData: (res: { data: ApiResponse<UserData> }) => res.data.data,
 });

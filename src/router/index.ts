@@ -3,6 +3,7 @@ import Login from '../pages/Login.vue';
 import Registration from '../pages/Registration.vue';
 import MeetBook from '../pages/MeetBook.vue';
 import { auth } from '../auth';
+import apiClient from '../api/client';
 
 const routes = [
   {
@@ -40,19 +41,40 @@ export const router = createRouter({
   routes,
 });
 
-router.beforeEach(async (to, _from, next) => {
-  const requiresAuth = to.meta.auth === true;
-  const isGuestOnly = to.meta.auth === false;
-
-  if (requiresAuth && !auth.check()) {
-    try {
-      await auth.fetch();
-    } catch {
-      // Ignore here; protected-route redirect is handled below.
-    }
+const tryRestoreSession = async (): Promise<boolean> => {
+  if (auth.check()) {
+    return true;
   }
 
-  const isAuthenticated = auth.check();
+  if (!auth.token()) {
+    return false;
+  }
+
+  try {
+    await auth.fetch();
+    if (auth.check()) {
+      return true;
+    }
+  } catch {
+    // Fall back to refresh flow when access token is expired.
+  }
+
+  try {
+    await apiClient.post('/auth/refresh', {});
+    await auth.fetch();
+    return auth.check();
+  } catch {
+    return false;
+  }
+};
+
+router.beforeEach(async (to, _, next) => {
+  const requiresAuth = to.meta.auth === true;
+  const isGuestOnly = to.meta.auth === false;
+  let isAuthenticated = auth.check();
+  if (!isAuthenticated && (requiresAuth || isGuestOnly)) {
+    isAuthenticated = await tryRestoreSession();
+  }
 
   if (requiresAuth && !isAuthenticated) {
     next({ name: 'Login' });
