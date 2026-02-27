@@ -1,0 +1,34 @@
+import Login from '../pages/Login.vue';
+import Registration from '../pages/Registration.vue';
+import MeetBook from '../pages/MeetBook.vue';
+
+export const routes = [
+  {
+    path: '/login',
+    name: 'Login',
+    component: Login,
+    meta: { auth: false },
+  },
+  {
+    path: '/login/google',
+    name: 'GoogleCallback',
+    component: MeetBook,
+    meta: { auth: false },
+  },
+  {
+    path: '/registration',
+    name: 'Registration',
+    component: Registration,
+    meta: { auth: false },
+  },
+  {
+    path: '/',
+    name: 'Home',
+    component: () => import('../pages/MeetBook.vue'),
+    meta: { auth: true },
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    redirect: '/',
+  },
+];

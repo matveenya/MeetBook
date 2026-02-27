@@ -1,31 +1,14 @@
 import axios, { AxiosError } from 'axios';
+import { AUTH_ENDPOINTS, AUTH_ENDPOINTS_WITHOUT_REFRESH } from './endpoints';
+import { urlMatchesAnyPath } from './url';
 
 const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
   withCredentials: true,
 });
 
-const AUTH_ENDPOINTS_WITHOUT_REFRESH = [
-  '/auth/login',
-  '/auth/register',
-  '/auth/logout',
-  '/auth/refresh',
-  '/auth/google',
-];
-
-const shouldSkipRefresh = (url?: string): boolean => {
-  if (!url) {
-    return false;
-  }
-
-  let pathName = url;
-  try {
-    pathName = new URL(url, import.meta.env.VITE_API_BASE_URL).pathname;
-  } catch {
-    // Keep raw URL fallback when parsing fails.
-  }
-  return AUTH_ENDPOINTS_WITHOUT_REFRESH.some(endpoint => pathName.endsWith(endpoint));
-};
+const shouldSkipRefresh = (url?: string): boolean =>
+  urlMatchesAnyPath(url, AUTH_ENDPOINTS_WITHOUT_REFRESH);
 
 apiClient.interceptors.response.use(
   response => response,
@@ -42,9 +25,11 @@ apiClient.interceptors.response.use(
 
       try {
         await axios.post(
-          `${import.meta.env.VITE_API_BASE_URL}/auth/refresh`,
+          `${import.meta.env.VITE_API_BASE_URL}${AUTH_ENDPOINTS.refresh}`,
           {},
-          { withCredentials: true }
+          {
+            withCredentials: true,
+          }
         );
 
         return apiClient(originalRequest);

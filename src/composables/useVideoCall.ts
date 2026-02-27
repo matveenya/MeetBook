@@ -2,11 +2,11 @@ import { ref } from 'vue';
 import AgoraRTC, {
   type ICameraVideoTrack,
   type IMicrophoneAudioTrack,
-  type IAgoraRTCRemoteUser,
   type UID,
 } from 'agora-rtc-sdk-ng';
-import apiClient from '../api/client';
-import type { UserResource } from '../types/user';
+import { fetchAgoraTokenRequest } from '../api/modules/agora';
+import { fetchUsersRequest } from '../api/modules/users';
+import { mapUsersToLabelMap } from '../utils/userMapping';
 
 export function useVideoCall(meetingId: string, onClose: () => void) {
   const client = AgoraRTC.createClient({ mode: 'rtc', codec: 'vp8' });
@@ -16,7 +16,7 @@ export function useVideoCall(meetingId: string, onClose: () => void) {
     audioTrack: IMicrophoneAudioTrack;
   } | null>(null);
 
-  const remoteUsers = ref<IAgoraRTCRemoteUser[]>([]);
+  const remoteUsers = ref<Array<{ uid: UID }>>([]);
   const isMicOn = ref(true);
   const isVideoOn = ref(true);
   const userLabelsById = ref<Record<string, string>>({});
@@ -24,14 +24,8 @@ export function useVideoCall(meetingId: string, onClose: () => void) {
 
   const loadUserLabels = async () => {
     try {
-      const { data } = await apiClient.get<{ data: UserResource[] }>('/api/users');
-      userLabelsById.value = data.data.reduce(
-        (acc, user) => {
-          acc[String(user.id)] = user.name || user.email;
-          return acc;
-        },
-        {} as Record<string, string>
-      );
+      const users = await fetchUsersRequest();
+      userLabelsById.value = mapUsersToLabelMap(users);
     } catch (error) {
       console.error('Failed to load user labels:', error);
     }
@@ -41,8 +35,7 @@ export function useVideoCall(meetingId: string, onClose: () => void) {
 
   const initCall = async () => {
     await loadUserLabels();
-    const { data } = await apiClient.get(`/api/agora/token?channelName=${meetingId}`);
-
+    const agoraToken = await fetchAgoraTokenRequest(meetingId);
     client.on('user-published', async (user, mediaType) => {
       await client.subscribe(user, mediaType);
 
@@ -62,7 +55,7 @@ export function useVideoCall(meetingId: string, onClose: () => void) {
       remoteUsers.value = remoteUsers.value.filter(u => u.uid !== user.uid);
     });
 
-    await client.join(data.appId, meetingId, data.token, data.uid);
+    await client.join(agoraToken.appId, meetingId, agoraToken.token, agoraToken.uid);
 
     const [audioTrack, videoTrack] = await AgoraRTC.createMicrophoneAndCameraTracks();
     localTracks.value = { videoTrack, audioTrack };

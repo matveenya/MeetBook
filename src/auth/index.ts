@@ -6,6 +6,7 @@ import googleDriver from './google';
 import cookieSessionDriver from './cookieSessionDriver';
 import { router } from '../router';
 import type { UserData, ApiResponse } from '../types/auth';
+import { AUTH_ENDPOINTS } from '../api/endpoints';
 
 axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
 axios.defaults.withCredentials = true;
@@ -28,31 +29,31 @@ export const auth = createAuth({
   },
 
   registerData: {
-    url: '/auth/register',
+    url: AUTH_ENDPOINTS.register,
     method: 'POST',
     redirect: '/',
     autoLogin: true,
   },
   loginData: {
-    url: '/auth/login',
+    url: AUTH_ENDPOINTS.login,
     method: 'POST',
     fetchUser: true,
     redirect: '/',
   },
   logoutData: {
-    url: '/auth/logout',
+    url: AUTH_ENDPOINTS.logout,
     method: 'POST',
     redirect: '/login',
     makeRequest: true,
   },
   fetchData: {
-    url: '/auth/user',
+    url: AUTH_ENDPOINTS.user,
     method: 'GET',
     enabled: true,
     waitRefresh: true,
   },
   refreshToken: {
-    url: '/auth/refresh',
+    url: AUTH_ENDPOINTS.refresh,
     method: 'POST',
     enabled: true,
   },

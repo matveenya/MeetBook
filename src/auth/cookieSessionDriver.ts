@@ -1,26 +1,8 @@
 import { defineAuthDriver } from 'vue-auth3';
-
-const AUTH_SUCCESS_ENDPOINTS = [
-  '/auth/login',
-  '/auth/register',
-  '/auth/google',
-  '/auth/user',
-  '/auth/refresh',
-];
+import { AUTH_SUCCESS_ENDPOINTS } from '../api/endpoints';
+import { resolvePathname } from '../api/url';
 
 const SESSION_MARKER = 'cookie-session';
-
-const resolvePathname = (url?: string): string => {
-  if (!url) {
-    return '';
-  }
-
-  try {
-    return new URL(url, import.meta.env.VITE_API_BASE_URL).pathname;
-  } catch {
-    return url;
-  }
-};
 
 export default defineAuthDriver({
   request(_auth, options) {
