@@ -1,6 +1,6 @@
-import apiClient from '../client';
-import { API_ENDPOINTS, getMeetingEndpoint } from '../endpoints';
-import type { Meeting, MeetingData } from '../../types/meeting';
+import apiClient from '@/api/client';
+import { API_ENDPOINTS, getMeetingEndpoint } from '@/api/endpoints';
+import type { Meeting, MeetingData } from '@/types/meeting';
 
 export const fetchMeetingsRequest = async () => {
   const { data } = await apiClient.get<{ data: Meeting[] }>(API_ENDPOINTS.meetings);

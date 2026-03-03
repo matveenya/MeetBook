@@ -1,7 +1,7 @@
 import { ref } from 'vue';
-import { fetchUsersRequest } from '../api/modules/users';
-import type { SelectedUser } from '../types/user';
-import { mapUsersToSelectedUsers } from '../utils/userMapping';
+import { fetchUsersRequest } from '@/api/modules/users';
+import type { SelectedUser } from '@/types/user';
+import { mapUsersToSelectedUsers } from '@/utils/userMapping';
 
 export function useCalendarResources() {
   const allUsers = ref<SelectedUser[]>([]);

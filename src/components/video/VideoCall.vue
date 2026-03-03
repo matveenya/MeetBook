@@ -42,7 +42,7 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted } from 'vue';
 import { useVideoCall } from '@/composables/useVideoCall';
-import Button from '../ui/Button.vue';
+import Button from '@/components/ui/Button.vue';
 
 const props = defineProps<{ meetingId: string }>();
 const emit = defineEmits(['close']);

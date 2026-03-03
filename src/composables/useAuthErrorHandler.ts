@@ -1,5 +1,5 @@
 import { ref } from 'vue';
-import { getAuthErrorMessage } from '../utils/authError';
+import { getAuthErrorMessage } from '@/utils/authError';
 
 export function useAuthErrorHandler() {
   const errorMessage = ref<string | null>(null);

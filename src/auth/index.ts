@@ -1,12 +1,12 @@
 import axios from 'axios';
-import apiClient from '../api/client';
+import apiClient from '@/api/client';
 import { createAuth } from 'vue-auth3';
 import driverHttpAxios from 'vue-auth3/dist/drivers/http/axios';
-import googleDriver from './google';
-import cookieSessionDriver from './cookieSessionDriver';
-import { router } from '../router';
-import type { UserData, ApiResponse } from '../types/auth';
-import { AUTH_ENDPOINTS } from '../api/endpoints';
+import googleDriver from '@/auth/google';
+import cookieSessionDriver from '@/auth/cookieSessionDriver';
+import { router } from '@/router';
+import type { UserData, ApiResponse } from '@/types/auth';
+import { AUTH_ENDPOINTS } from '@/api/endpoints';
 
 axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
 axios.defaults.withCredentials = true;

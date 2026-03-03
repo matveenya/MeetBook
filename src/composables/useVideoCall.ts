@@ -4,9 +4,9 @@ import AgoraRTC, {
   type IMicrophoneAudioTrack,
   type UID,
 } from 'agora-rtc-sdk-ng';
-import { fetchAgoraTokenRequest } from '../api/modules/agora';
-import { fetchUsersRequest } from '../api/modules/users';
-import { mapUsersToLabelMap } from '../utils/userMapping';
+import { fetchAgoraTokenRequest } from '@/api/modules/agora';
+import { fetchUsersRequest } from '@/api/modules/users';
+import { mapUsersToLabelMap } from '@/utils/userMapping';
 
 export function useVideoCall(meetingId: string, onClose: () => void) {
   const client = AgoraRTC.createClient({ mode: 'rtc', codec: 'vp8' });

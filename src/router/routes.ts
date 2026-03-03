@@ -1,6 +1,6 @@
-import Login from '../pages/Login.vue';
-import Registration from '../pages/Registration.vue';
-import MeetBook from '../pages/MeetBook.vue';
+import Login from '@/pages/Login.vue';
+import Registration from '@/pages/Registration.vue';
+import MeetBook from '@/pages/MeetBook.vue';
 
 export const routes = [
   {
@@ -24,7 +24,7 @@ export const routes = [
   {
     path: '/',
     name: 'Home',
-    component: () => import('../pages/MeetBook.vue'),
+    component: () => import('@/pages/MeetBook.vue'),
     meta: { auth: true },
   },
   {

@@ -4,8 +4,8 @@ import {
   deleteMeetingRequest,
   fetchMeetingsRequest,
   updateMeetingRequest,
-} from '../api/modules/meetings';
-import type { Meeting, MeetingData } from '../types/meeting';
+} from '@/api/modules/meetings';
+import type { Meeting, MeetingData } from '@/types/meeting';
 
 export function useCalendarEvents() {
   const meetings = ref<Meeting[]>([]);

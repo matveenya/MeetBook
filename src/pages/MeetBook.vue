@@ -24,12 +24,12 @@
 <script setup lang="ts">
 import { computed, onMounted } from 'vue';
 import { useAuth } from 'vue-auth3';
-import type { AuthUserResponse } from '../types/auth';
+import type { AuthUserResponse } from '@/types/auth';
 import Sidebar from '@/components/layout/Sidebar.vue';
-import Header from '../components/layout/Header.vue';
-import DashboardTabs from '../components/layout/DashboardTabs.vue';
-import CalendarBoard from '../components/calendar/CalendarBoard.vue';
-import { useGoogleAuth } from '../composables/useGoogleAuth';
+import Header from '@/components/layout/Header.vue';
+import DashboardTabs from '@/components/layout/DashboardTabs.vue';
+import CalendarBoard from '@/components/calendar/CalendarBoard.vue';
+import { useGoogleAuth } from '@/composables/useGoogleAuth';
 
 const auth = useAuth();
 

@@ -1,6 +1,6 @@
 import { defineAuthDriver } from 'vue-auth3';
-import { AUTH_SUCCESS_ENDPOINTS } from '../api/endpoints';
-import { resolvePathname } from '../api/url';
+import { AUTH_SUCCESS_ENDPOINTS } from '@/api/endpoints';
+import { resolvePathname } from '@/api/url';
 
 const SESSION_MARKER = 'cookie-session';
 

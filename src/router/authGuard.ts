@@ -1,6 +1,6 @@
 import type { Router } from 'vue-router';
-import { auth } from '../auth';
-import { refreshSessionRequest } from '../api/modules/auth';
+import { auth } from '@/auth';
+import { refreshSessionRequest } from '@/api/modules/auth';
 
 const tryRestoreSession = async () => {
   if (auth.check()) {

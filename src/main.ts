@@ -4,9 +4,9 @@ import PrimeVue from 'primevue/config';
 import Aura from '@primevue/themes/aura';
 import 'primeicons/primeicons.css';
 import './style.css';
-import App from './App.vue';
-import { auth } from './auth';
-import { router } from './router';
+import App from '@/App.vue';
+import { auth } from '@/auth';
+import { router } from '@/router';
 
 const app = createApp(App);
 const pinia = createPinia();

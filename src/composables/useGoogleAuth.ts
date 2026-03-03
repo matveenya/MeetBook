@@ -1,7 +1,7 @@
 import { ref } from 'vue';
 import { useAuth } from 'vue-auth3';
 import { useRoute, useRouter } from 'vue-router';
-import { exchangeGoogleCodeRequest } from '../api/modules/auth';
+import { exchangeGoogleCodeRequest } from '@/api/modules/auth';
 
 export function useGoogleAuth() {
   const auth = useAuth();

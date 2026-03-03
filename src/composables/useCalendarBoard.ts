@@ -1,8 +1,8 @@
 import { ref, reactive, type Ref } from 'vue';
 import type { DateSelectArg, EventClickArg } from '@fullcalendar/core';
-import type { SelectedUser } from '../types/user';
+import type { SelectedUser } from '@/types/user';
 import type { Meeting, MeetingData } from '@/types/meeting';
-import { getMeetingParticipants } from '../utils/calendarUtils';
+import { getMeetingParticipants } from '@/utils/calendarUtils';
 
 export function useCalendarBoard(
   meetings: Ref<Meeting[]>,

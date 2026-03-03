@@ -1,5 +1,5 @@
-import apiClient from '../client';
-import { getAgoraTokenEndpoint } from '../endpoints';
+import apiClient from '@/api/client';
+import { getAgoraTokenEndpoint } from '@/api/endpoints';
 
 export interface AgoraTokenPayload {
   appId: string;

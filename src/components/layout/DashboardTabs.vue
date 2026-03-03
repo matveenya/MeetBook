@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import Button from '../ui/Button.vue';
+import Button from '@/components/ui/Button.vue';
 const tabs = ['Calendar View', 'Booking History', 'Booking Statistics', 'Cancel Request'];
 </script>
 

@@ -1,6 +1,6 @@
 import axios, { AxiosError, type InternalAxiosRequestConfig } from 'axios';
-import { AUTH_ENDPOINTS, AUTH_ENDPOINTS_WITHOUT_REFRESH } from './endpoints';
-import { urlMatchesAnyPath } from './url';
+import { AUTH_ENDPOINTS, AUTH_ENDPOINTS_WITHOUT_REFRESH } from '@/api/endpoints';
+import { urlMatchesAnyPath } from '@/api/url';
 
 const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
@@ -48,7 +48,7 @@ apiClient.interceptors.response.use(
       } catch (refreshError) {
         if (!isLoggingOut) {
           isLoggingOut = true;
-          const { auth } = await import('../auth');
+          const { auth } = await import('@/auth');
           await auth.logout({ redirect: '/login', makeRequest: false });
           isLoggingOut = false;
         }

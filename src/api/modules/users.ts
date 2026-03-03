@@ -1,6 +1,6 @@
-import apiClient from '../client';
-import { API_ENDPOINTS } from '../endpoints';
-import type { UserResource } from '../../types/user';
+import apiClient from '@/api/client';
+import { API_ENDPOINTS } from '@/api/endpoints';
+import type { UserResource } from '@/types/user';
 
 export const fetchUsersRequest = async () => {
   const { data } = await apiClient.get<{ data: UserResource[] }>(API_ENDPOINTS.users);

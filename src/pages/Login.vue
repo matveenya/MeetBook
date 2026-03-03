@@ -59,12 +59,12 @@
 import { useRouter } from 'vue-router';
 import { useAuth } from 'vue-auth3';
 import { useForm } from 'vee-validate';
-import { loginSchema, type LoginSchema } from '../utils/schemas/authValidationSchema';
+import { loginSchema, type LoginSchema } from '@/utils/schemas/authValidationSchema';
 import { toTypedSchema } from '@vee-validate/zod';
-import Input from '../components/ui/Input.vue';
-import Button from '../components/ui/Button.vue';
-import OrBlockAuth from '../components/auth/OrBlockAuth.vue';
-import { useAuthErrorHandler } from '../composables/useAuthErrorHandler';
+import Input from '@/components/ui/Input.vue';
+import Button from '@/components/ui/Button.vue';
+import OrBlockAuth from '@/components/auth/OrBlockAuth.vue';
+import { useAuthErrorHandler } from '@/composables/useAuthErrorHandler';
 
 const { errorMessage, handleAuthError } = useAuthErrorHandler();
 

@@ -1,5 +1,5 @@
-import apiClient from '../client';
-import { AUTH_ENDPOINTS } from '../endpoints';
+import apiClient from '@/api/client';
+import { AUTH_ENDPOINTS } from '@/api/endpoints';
 
 export const refreshSessionRequest = async () => {
   await apiClient.post(AUTH_ENDPOINTS.refresh, {});

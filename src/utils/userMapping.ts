@@ -1,4 +1,4 @@
-import type { SelectedUser, UserResource } from '../types/user';
+import type { SelectedUser, UserResource } from '@/types/user';
 
 export const getUserDisplayName = (user: Pick<UserResource, 'name' | 'email'>) =>
   user.name || user.email;
