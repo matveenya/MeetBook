@@ -1,58 +1,56 @@
 <template>
-  <div class="min-h-screen bg-[#3f4bb0] flex items-center justify-center p-4 font-sans">
-    <div class="bg-white w-full max-w-md rounded-[40px] shadow-xl p-10 flex flex-col items-center">
-      <h1 class="text-[#333] text-3xl font-medium mb-12">Welcome</h1>
+  <AuthLayout>
+    <h1 class="text-[#333] text-3xl font-medium mb-12">Welcome</h1>
 
-      <form class="w-full space-y-5" @submit.prevent="onSubmit">
-        <p v-if="errorMessage" class="text-red-500 text-sm mb-4 text-center">{{ errorMessage }}</p>
+    <form class="w-full space-y-5" @submit.prevent="onSubmit">
+      <p v-if="errorMessage" class="text-red-500 text-sm mb-4 text-center">{{ errorMessage }}</p>
 
-        <Input
-          v-model="email"
-          v-bind="emailProps"
-          type="email"
-          placeholder="Email"
-          icon="pi pi-envelope"
-          :error="errors.email"
-        />
+      <Input
+        v-model="email"
+        v-bind="emailProps"
+        type="email"
+        placeholder="Email"
+        icon="pi pi-envelope"
+        :error="errors.email"
+      />
 
-        <Input
-          v-model="password"
-          v-bind="passwordProps"
-          type="password"
-          placeholder="Password"
-          icon="pi pi-lock"
-          :error="errors.password"
-        />
+      <Input
+        v-model="password"
+        v-bind="passwordProps"
+        type="password"
+        placeholder="Password"
+        icon="pi pi-lock"
+        :error="errors.password"
+      />
 
-        <div class="text-right">
-          <a href="#" class="text-[#7e8ae5] text-sm hover:underline">Forgot password?</a>
-        </div>
-
-        <Button type="submit" label="Log in" :loading="isSubmitting" />
-      </form>
-
-      <OrBlockAuth class="w-full flex items-center my-8" />
-
-      <div class="w-full mb-10">
-        <Button @click="loginWithGoogle" variant="outlined">
-          <img
-            src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png"
-            class="w-5 h-5 mr-2"
-          />
-          <span>Google</span>
-        </Button>
+      <div class="text-right">
+        <a href="#" class="text-[#7e8ae5] text-sm hover:underline">Forgot password?</a>
       </div>
 
-      <p class="text-gray-500 text-sm mb-4 text-center">Have no account yet?</p>
-      <Button
-        @click="goToRegistration"
-        type="submit"
-        label="Registration"
-        variant="outlined"
-        :loading="isSubmitting"
-      />
+      <Button type="submit" label="Log in" :loading="isSubmitting" />
+    </form>
+
+    <OrBlockAuth class="w-full flex items-center my-8" />
+
+    <div class="w-full mb-10">
+      <Button @click="loginWithGoogle" variant="outlined">
+        <img
+          src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png"
+          class="w-5 h-5 mr-2"
+        />
+        <span>Google</span>
+      </Button>
     </div>
-  </div>
+
+    <p class="text-gray-500 text-sm mb-4 text-center">Have no account yet?</p>
+    <Button
+      @click="goToRegistration"
+      type="submit"
+      label="Registration"
+      variant="outlined"
+      :loading="isSubmitting"
+    />
+  </AuthLayout>
 </template>
 
 <script lang="ts" setup>
@@ -65,6 +63,7 @@ import Input from '@/components/ui/Input.vue';
 import Button from '@/components/ui/Button.vue';
 import OrBlockAuth from '@/components/auth/OrBlockAuth.vue';
 import { useAuthErrorHandler } from '@/composables/useAuthErrorHandler';
+import AuthLayout from '@/layouts/AuthLayout.vue';
 
 const { errorMessage, handleAuthError } = useAuthErrorHandler();
 
