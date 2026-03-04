@@ -1,6 +1,7 @@
 import { ref } from 'vue';
-import apiClient from '../api/client';
-import type { UserResource, SelectedUser } from '../types/user';
+import { fetchUsersRequest } from '@/api/modules/users';
+import type { SelectedUser } from '@/types/user';
+import { mapUsersToSelectedUsers } from '@/utils/userMapping';
 
 export function useCalendarResources() {
   const allUsers = ref<SelectedUser[]>([]);
@@ -9,13 +10,8 @@ export function useCalendarResources() {
 
   const fetchResources = async () => {
     try {
-      const { data } = await apiClient.get<{ data: UserResource[] }>('/api/users');
-      const users = data.data;
-
-      const mappedUsers = users.map(user => ({
-        id: user.id.toString(),
-        title: user.name || user.email,
-      }));
+      const users = await fetchUsersRequest();
+      const mappedUsers = mapUsersToSelectedUsers(users);
 
       allUsers.value = mappedUsers;
       selectedUsers.value = mappedUsers;

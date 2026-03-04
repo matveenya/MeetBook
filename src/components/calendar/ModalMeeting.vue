@@ -63,10 +63,10 @@
 <script setup lang="ts">
 import { ref, nextTick } from 'vue';
 import Dialog from 'primevue/dialog';
-import Button from '../ui/Button.vue';
-import Input from '../ui/Input.vue';
-import Select from '../ui/Select.vue';
-import type { SelectedUser } from '../../types/user';
+import Button from '@/components/ui/Button.vue';
+import Input from '@/components/ui/Input.vue';
+import Select from '@/components/ui/Select.vue';
+import type { SelectedUser } from '@/types/user';
 
 defineProps<{
   visible: boolean;

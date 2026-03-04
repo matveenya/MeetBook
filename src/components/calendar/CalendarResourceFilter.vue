@@ -15,8 +15,8 @@
 </template>
 
 <script setup lang="ts">
-import Select from '../ui/Select.vue';
-import type { SelectedUser } from '../../types/user';
+import Select from '@/components/ui/Select.vue';
+import type { SelectedUser } from '@/types/user';
 
 defineProps<{
   options: SelectedUser[];

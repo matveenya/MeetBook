@@ -1,4 +1,4 @@
-import type { Meeting } from '../types/meeting';
+import type { Meeting } from '@/types/meeting';
 
 export interface DayRange {
   start: Date;

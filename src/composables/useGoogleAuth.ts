@@ -1,7 +1,7 @@
 import { ref } from 'vue';
 import { useAuth } from 'vue-auth3';
 import { useRoute, useRouter } from 'vue-router';
-import apiClient from '../api/client';
+import { exchangeGoogleCodeRequest } from '@/api/modules/auth';
 
 export function useGoogleAuth() {
   const auth = useAuth();
@@ -10,11 +10,12 @@ export function useGoogleAuth() {
   const isReady = ref(false);
 
   const initAuth = async () => {
-    const code = route.query.code;
+    const rawCode = route.query.code;
+    const code = Array.isArray(rawCode) ? rawCode[0] : rawCode;
 
     try {
       if (code) {
-        await apiClient.post('/auth/google', { code });
+        await exchangeGoogleCodeRequest(code);
         await router.replace({ query: {} });
         await auth.fetch();
       } else {

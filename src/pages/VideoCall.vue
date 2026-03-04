@@ -1,5 +1,5 @@
 <template>
-  <div class="fixed inset-0 bg-black z-50 flex flex-col">
+  <div class="min-h-screen bg-black flex flex-col">
     <div id="video-grid" class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-gray-900">
       <div
         id="local-player"
@@ -27,7 +27,7 @@
         callIcon="mic"
         :off="!isMicOn"
       />
-      <Button @click="leaveCall" :fluid="false" variant="callEnd"> End call </Button>
+      <Button @click="handleLeaveCall" :fluid="false" variant="callEnd"> End call </Button>
       <Button
         @click="toggleVideo"
         :fluid="false"
@@ -41,11 +41,18 @@
 
 <script setup lang="ts">
 import { onMounted, onUnmounted } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import { useVideoCall } from '@/composables/useVideoCall';
-import Button from '../ui/Button.vue';
+import Button from '@/components/ui/Button.vue';
 
-const props = defineProps<{ meetingId: string }>();
-const emit = defineEmits(['close']);
+const route = useRoute();
+const router = useRouter();
+
+const meetingId = route.params.meetingId as string;
+
+const goHome = () => {
+  router.push('/');
+};
 
 const {
   remoteUsers,
@@ -56,7 +63,9 @@ const {
   toggleMic,
   toggleVideo,
   leaveCall,
-} = useVideoCall(props.meetingId, () => emit('close'));
+} = useVideoCall(meetingId, goHome);
+
+const handleLeaveCall = () => leaveCall(true);
 
 onMounted(initCall);
 onUnmounted(() => leaveCall(false));

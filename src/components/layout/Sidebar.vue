@@ -25,7 +25,7 @@
 </template>
 
 <script setup lang="ts">
-import SidebarItem from '../ui/SidebarItem.vue';
+import SidebarItem from '@/components/ui/SidebarItem.vue';
 
 const menu = [
   { label: 'Dashboard', icon: 'pi pi-th-large' },

@@ -1,5 +1,5 @@
-import type { Meeting } from '../types/meeting';
-import type { SelectedUser } from '../types/user';
+import type { Meeting } from '@/types/meeting';
+import type { SelectedUser } from '@/types/user';
 
 export const getMeetingParticipants = (
   allMeetings: Meeting[],
