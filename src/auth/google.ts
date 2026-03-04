@@ -5,7 +5,7 @@ export default defineOAuth2Driver({
 
   params: {
     client_id: import.meta.env.VITE_CLIENT_ID,
-    redirect_uri: 'http://localhost:5173/login/google',
+    redirect_uri: import.meta.env.VITE_GOOGLE_REDIRECT_URI,
     response_type: 'code',
     scope: 'openid email profile',
     state: {},

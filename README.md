@@ -41,6 +41,7 @@ The client-side application for the **MeetBook** booking system, built with **Vu
     ```env
     VITE_API_BASE_URL=http://localhost:3001
     VITE_CLIENT_ID=your_google_client_id
+    VITE_GOOGLE_REDIRECT_URI=http://localhost:5173/login/google
     ```
 
 ### Development
