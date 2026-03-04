@@ -105,5 +105,3 @@ const loginWithGoogle = () => {
   });
 };
 </script>
-
-<style scoped></style>

@@ -13,5 +13,3 @@ defineProps<{
   icon: string;
 }>();
 </script>
-
-<style scoped></style>

@@ -28,6 +28,12 @@ export const routes = [
     meta: { auth: true },
   },
   {
+    path: '/call/:meetingId',
+    name: 'VideoCall',
+    component: () => import('@/pages/VideoCall.vue'),
+    meta: { auth: true },
+  },
+  {
     path: '/:pathMatch(.*)*',
     redirect: '/',
   },

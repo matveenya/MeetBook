@@ -28,17 +28,12 @@
       @delete="handleDelete"
       @startVideo="onStartVideo"
     />
-
-    <VideoCall
-      v-if="activeCallMeetingId"
-      :meetingId="activeCallMeetingId"
-      @close="activeCallMeetingId = null"
-    />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, reactive, onMounted, watch, computed, type Ref } from 'vue';
+import { useRouter } from 'vue-router';
 import FullCalendar from '@fullcalendar/vue3';
 import type { CalendarOptions } from '@fullcalendar/core';
 import { useAuth } from 'vue-auth3';
@@ -47,7 +42,6 @@ import CalendarNavigation from '@/components/calendar/CalendarNavigation.vue';
 import CalendarResourceFilter from '@/components/calendar/CalendarResourceFilter.vue';
 import CalendarView from '@/components/calendar/CalendarView.vue';
 import ModalMeeting from '@/components/calendar/ModalMeeting.vue';
-import VideoCall from '@/components/video/VideoCall.vue';
 import type { AuthUserResponse } from '@/types/auth';
 import { useCalendarNavigation } from '@/composables/useCalendarNavigation';
 import { useCalendarResources } from '@/composables/useCalendarResources';
@@ -58,22 +52,7 @@ import { getAccountDailyMeetings, getTotalMeetings } from '@/utils/calendarMeeti
 
 const fullCalendarWrapper = ref<InstanceType<typeof CalendarView> | null>(null);
 const auth = useAuth();
-
-const activeCallMeetingId = ref<string | null>(null);
-
-const onStartVideo = () => {
-  const meeting = meetings.value.find(m => String(m.id) === String(selectedEventId.value));
-
-  if (meeting && meeting.groupId) {
-    activeCallMeetingId.value = meeting.groupId;
-    showModal.value = false;
-  } else {
-    console.error('Error: Meeting not found or Group ID missing', {
-      selectedId: selectedEventId.value,
-      meeting: meeting,
-    });
-  }
-};
+const router = useRouter();
 
 const calendarProxy = computed(() => ({
   getApi: () => fullCalendarWrapper.value?.getApi(),
@@ -103,6 +82,20 @@ const {
   remove: deleteMeeting,
   refresh: fetchMeetings,
 });
+
+const onStartVideo = () => {
+  const meeting = meetings.value.find(m => String(m.id) === String(selectedEventId.value));
+
+  if (meeting && meeting.groupId) {
+    showModal.value = false;
+    router.push({ name: 'VideoCall', params: { meetingId: meeting.groupId } });
+  } else {
+    console.error('Error: Meeting not found or Group ID missing', {
+      selectedId: selectedEventId.value,
+      meeting: meeting,
+    });
+  }
+};
 
 const currentDayDate = computed(() => {
   const api = fullCalendarWrapper.value?.getApi();

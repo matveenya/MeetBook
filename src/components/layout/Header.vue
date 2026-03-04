@@ -22,5 +22,3 @@ defineProps<{
 }>();
 defineEmits(['logout']);
 </script>
-
-<style scoped></style>

@@ -40,5 +40,3 @@ const userName = computed(() => {
 
 onMounted(initAuth);
 </script>
-
-<style scoped></style>

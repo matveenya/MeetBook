@@ -25,5 +25,3 @@ withDefaults(
 
 defineEmits(['logout']);
 </script>
-
-<style scoped></style>

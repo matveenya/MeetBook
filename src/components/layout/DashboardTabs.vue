@@ -8,5 +8,3 @@
 import Button from '@/components/ui/Button.vue';
 const tabs = ['Calendar View', 'Booking History', 'Booking Statistics', 'Cancel Request'];
 </script>
-
-<style scoped></style>
